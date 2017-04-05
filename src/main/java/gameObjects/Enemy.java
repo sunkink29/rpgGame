@@ -155,28 +155,22 @@ public class Enemy extends GameObject {
 			targetDirection.z = 0;
 			
 //			// rotation calculation
-			double playerDirection = Math.atan2(targetDirection.x, targetDirection.y);
-			playerDirection += playerDirection + Math.PI/2 * (playerDirection<0?-1:1);
-//			playerDirection = playerDirection>=0?playerDirection:-playerDirection + (Math.PI - playerDirection);
+			double playerDirection = Math.atan2(targetDirection.y, targetDirection.x);
+			playerDirection += -Math.PI/2;
 			
 			double rotation = (float) (this.rotation%(Math.PI*2));
-//			rotation = rotation>=0?rotation:(Math.PI * 2) - rotation;
-//			rotation = rotation<Math.PI?rotation:(Math.PI - (rotation - Math.PI));
 			
 			double rDistance =	playerDirection - rotation;
-//			rDistance = rDistance<Math.PI?rDistance:-(2*Math.PI - rDistance);
-//			rDistance += (rDistance>Math.PI) ? -(2*Math.PI) : (rDistance<-Math.PI) ? (2*Math.PI) : 0;
-//			rDistance = mod((rDistance + Math.PI), Math.PI * 2) - Math.PI;
+			rDistance = mod((rDistance + Math.PI), Math.PI * 2) - Math.PI;
 			
 			rDistance = rDistance>=0?rDistance:Math.PI + (Math.PI + rDistance);
 			
-			float rDirection = (rDistance>Math.PI?1:-1)/*-1*/;
+			float rDirection = -(rDistance>Math.PI?1:-1)/*-1*/;
 						
 			if (Math.abs(rDistance) > Math.PI / 64) {
 				this.rotation += rotationSpeed * Controls.deltaTime * rDirection;
 			}
-			this.rotation = (float) playerDirection;
-			System.out.println(rDistance + " " + playerDirection + " " +  rotation + " " + rDirection + " " + this.rotation);
+//			System.out.println(rDistance + " " + playerDirection + " " +  rotation + " " + rDirection + " " + this.rotation);
 
 			
 			// color calculation
