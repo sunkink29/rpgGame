@@ -10,7 +10,11 @@ public class Shader {
 	static String[][] shaders = {
 		{"general",
 			"generalShader.vert",
-			"generalShader.frag"}};
+			"generalShader.frag"},
+		{"test",
+				"generalShader.vert",
+				"testShader.frag"}
+			};
 	static ArrayList<ArrayList<String>> initializedShaders = new ArrayList<ArrayList<String>>();
 	
 	public static int getProgramId(String name) {

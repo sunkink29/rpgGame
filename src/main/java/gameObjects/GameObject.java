@@ -1,39 +1,15 @@
 package gameObjects;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.glfwGetKey;
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
-import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glDrawElements;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL20.glDeleteProgram;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniform3f;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
-import static org.lwjgl.opengl.GL20.glUseProgram;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 import java.nio.FloatBuffer;
-
-import main.Main;
 
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 
-import rendering.Controls;
-import rendering.Model;
 import rendering.Shader;
-
 
 public class GameObject {
 	
@@ -42,9 +18,11 @@ public class GameObject {
 	Vector3f scale;
 	float rotation;
 	int vao;
-	int programId;
+	int programId = -1;
 	int matrixId;
+	int wMatrixId;
 	int colorId;
+	UniformShaderProperty[] shaderProperties;
 	
 	public GameObject(Vector3f position, Vector3f color) {
 		this(position, color, new Vector3f(), 0);
@@ -61,21 +39,45 @@ public class GameObject {
 		this.rotation = rotation;
 	}
 	
-	public void init(int vao, int programID) {
-		this.vao = vao;
-		this.programId = programID;
-		matrixId = glGetUniformLocation(programID, "MVP");
-		colorId = glGetUniformLocation(programID, "color");
+	public GameObject(Vector3f position, Vector3f color, Vector3f scale, String programName, UniformShaderProperty[] shaderProperties) {
+		this(position, color, scale);
+		this.shaderProperties = shaderProperties;
+		programId = Shader.getProgramId(programName);
 	}
 	
+	public void init(int vao, int programID) {
+		this.vao = vao;
+		if (programId == -1)
+			programId = programID;
+		matrixId = glGetUniformLocation(programID, "MVP");
+		wMatrixId = glGetUniformLocation(programID, "worldMatrix");
+		colorId = glGetUniformLocation(programID, "color");
+		if (shaderProperties != null) {
+			for (UniformShaderProperty shaderProperty: shaderProperties){
+				shaderProperty.ID = glGetUniformLocation(programID, shaderProperty.name);
+			}
+		}
+	}
+		
 	public void renderObject(Matrix4f viewMatrix) {
 		glUseProgram(programId);
 		glBindVertexArray(vao);
 		FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(16);
+		FloatBuffer positionMatrix = BufferUtils.createFloatBuffer(16);
 		Matrix4f dest = new Matrix4f();
-		floatBuffer =  viewMatrix.translate(position,dest).rotate(rotation, new Vector3f(0, 0, 1)).scale(scale).get(floatBuffer);
+		positionMatrix = new Matrix4f().translate(position).rotate(rotation, new Vector3f(0, 0, 1)).scale(scale).get(positionMatrix);
+		floatBuffer =  viewMatrix.get(floatBuffer);
 		glUniformMatrix4fv(matrixId, false, floatBuffer);
+		glUniformMatrix4fv(wMatrixId, false, positionMatrix);
 		glUniform3f(colorId, color.x, color.y, color.z);
+		if (shaderProperties != null) {
+			for (UniformShaderProperty shaderProperty: shaderProperties) {
+				if (shaderProperty.vector2fObject != null){
+					FloatBuffer vector2floatBuffer = BufferUtils.createFloatBuffer(2);
+					glUniform2fv(shaderProperty.ID, shaderProperty.vector2fObject.get(vector2floatBuffer));
+				}
+			}
+		}
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	}
 	

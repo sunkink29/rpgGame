@@ -39,7 +39,7 @@ public class Collision {
 					position.x + size.x/2 > sword.position.x - sword.scale.x/2 &&
 					position.y - size.y/2 < sword.position.y + sword.scale.y/2 &&
 					position.y + size.y/2 > sword.position.y - sword.scale.y/2) {
-//			collisionDirection.add(0, 0, -1);
+			collisionDirection.add(0, 0, -1);
 		}
 		return collisionDirection;
 	}

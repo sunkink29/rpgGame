@@ -31,6 +31,7 @@ public class Player {
 	float speed = 5.0f; // 3 units / second
 	public Vector3f movementDirection = new Vector3f();
 	float health = 10;
+	UniformShaderProperty[] shaderProperties;
 
 	public Player() {
 		float vertices2[] = {
@@ -46,7 +47,9 @@ public class Player {
 		int[] triangle = Model.getModelIds("triangle", "general", vertices2, elements2);
 		int triangleVao = triangle[0];
 		int triangleProgramID = triangle[1];
-		player = new GameObject(playerPosition, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.5f));
+		
+		shaderProperties = new UniformShaderProperty[] {new UniformShaderProperty("shaderPosition", new Vector2f(0, 0))};
+		player = new GameObject(playerPosition, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.5f),"general",shaderProperties);
 		sword = new GameObject(playerPosition, new Vector3f(0.88f, 0.46f, 0.46f), new Vector3f(0.2f, 0.4f, 1));
 		player.init(triangleVao, triangleProgramID);
 		sword.init(triangleVao, triangleProgramID);

@@ -95,8 +95,8 @@ public class Enemy extends GameObject {
 	
 	@Override
 	public void renderObject(Matrix4f viewMatrix) {
+		sword.renderObject(viewMatrix);
 		super.renderObject(viewMatrix);
-//		sword.renderObject(viewMatrix);
 	}
 	
 	public void updateEnemy(Map map) {
@@ -121,7 +121,7 @@ public class Enemy extends GameObject {
 //			System.out.println(distance);
 			if (distance < detectionDistance) {
 				targetPoint = Player.currentPlayer.player.position;
-				if (distance > 0.75) {
+				if (distance > 1) {
 					applyMovement = true;
 //					Player.currentPlayer.player.position.sub(position, movementDirection).normalize().mul(1.5f);
 					followingPlayer = true;
@@ -167,7 +167,7 @@ public class Enemy extends GameObject {
 			
 			float rDirection = -(rDistance>Math.PI?1:-1)/*-1*/;
 						
-			if (Math.abs(rDistance) > Math.PI / 64) {
+			if (Math.abs(rDistance) > Math.PI / 128) {
 				this.rotation += rotationSpeed * Controls.deltaTime * rDirection;
 			}
 //			System.out.println(rDistance + " " + playerDirection + " " +  rotation + " " + rDirection + " " + this.rotation);
@@ -193,7 +193,7 @@ public class Enemy extends GameObject {
 //			System.out.println(targetDirection);
 			
 			// apply movement
-			if (applyMovement && false)
+			if (applyMovement)
 				position.add(targetDirection.mul(Controls.deltaTime).mul(speed));
 			
 			// calculate sword position

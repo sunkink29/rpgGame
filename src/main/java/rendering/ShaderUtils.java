@@ -2,6 +2,7 @@ package rendering;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -23,22 +24,14 @@ public class ShaderUtils {
 	
 	public static char[] fileToByteArray(String source) throws FileNotFoundException {
 		String output = "";
-		URL urlDir = ShaderUtils.class.getResource(source);
-		URI uriDir = null;
-		try {
-			uriDir = urlDir.toURI();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		File file = new File(uriDir);
-		Scanner scanner = new Scanner(file);
+		InputStream Dir = ShaderUtils.class.getResourceAsStream(source);
+		Scanner scanner = new Scanner(Dir);
 
 		output = scanner.nextLine();
 		while (scanner.hasNextLine()) {
 		       output = output + "\n" + scanner.nextLine();
 		}
-
+		scanner.close();
 		return output.toCharArray();
 	}
 	

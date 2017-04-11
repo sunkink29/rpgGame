@@ -86,12 +86,13 @@ public class Main {
 		
 		glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 		
-		GL.createCapabilities();
 		return window;
 	}
 	
 	public static void main(String[] args) {
 		long window = Main.init();
+		
+		GL.createCapabilities();
 		
 		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		
@@ -107,6 +108,9 @@ public class Main {
 		Map map = new Map();
 		map.rooms.add(new Room(new Vector3f(), new Vector2f(10)));
 		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(12, 0, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 3));
+		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(12, 12, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 2));
+		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(0, 12, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 1));
+		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(0, 0, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 0));
 		map.rooms.add(new Room(new Vector3f(12, 0, 0), new Vector2f(10)));
 		map.rooms.add(new Room(new Vector3f(-12, 12, 0), new Vector2f(10, 10)));
 		map.rooms.add(new Room(new Vector3f(6, 12, 0), new Vector2f(22, 10)));
