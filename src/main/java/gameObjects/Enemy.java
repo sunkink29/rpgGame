@@ -99,7 +99,7 @@ public class Enemy extends GameObject {
 		super.renderObject(viewMatrix);
 	}
 	
-	public void updateEnemy(Map map) {
+	public void update(Map map) {
 		Vector3f collisionDirection = Collision.isEnemyColliding(map, this);
 		Vector3f targetDirection = new Vector3f();
 //		System.out.println(health);

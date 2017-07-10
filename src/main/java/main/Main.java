@@ -19,6 +19,7 @@ import gameObjects.GameObject;
 import gameObjects.Hallway;
 import gameObjects.Map;
 import gameObjects.Player;
+import gameObjects.ProjectileLauncher;
 import gameObjects.Room;
 
 import java.nio.FloatBuffer;
@@ -107,10 +108,11 @@ public class Main {
 		
 		Map map = new Map();
 		map.rooms.add(new Room(new Vector3f(), new Vector2f(10)));
-		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(12, 0, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 3));
-		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(12, 12, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 2));
-		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(0, 12, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 1));
-		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(0, 0, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 0));
+//		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(12, 0, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 3));
+//		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(12, 12, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 2));
+//		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(0, 12, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 1));
+//		map.rooms.get(0).enemies.add(new Enemy(new Vector3f(0, 0, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 0));
+		map.rooms.get(0).objects.add(new ProjectileLauncher(new Vector3f(0, 0, -1), new Vector3f(1), 0));
 		map.rooms.add(new Room(new Vector3f(12, 0, 0), new Vector2f(10)));
 		map.rooms.add(new Room(new Vector3f(-12, 12, 0), new Vector2f(10, 10)));
 		map.rooms.add(new Room(new Vector3f(6, 12, 0), new Vector2f(22, 10)));

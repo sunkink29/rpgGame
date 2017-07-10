@@ -115,6 +115,11 @@ public class Player {
 			movementDirection.y /= movementDirection.y * movementDirection.y<0?-1:1;
 		}
 		health += movementDirection.z;
+		if (movementDirection.z != 0) {
+			player.color = new Vector3f(1);
+		} else {
+			player.color = new Vector3f();
+		}
 		movementDirection.z = 0;
 		setPlayerPosition(getPlayerPosition().add(movementDirection.mul(Controls.deltaTime,dest).mul(speed)));
 //		System.out.println(playerCollision);

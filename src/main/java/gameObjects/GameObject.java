@@ -13,10 +13,13 @@ import rendering.Shader;
 
 public class GameObject {
 	
+	public String name;
+	public String[] tags;
+	public GameObject[] childObjects;
 	public Vector3f position;
-	Vector3f color;
 	Vector3f scale;
 	float rotation;
+	Vector3f color;
 	int vao;
 	int programId = -1;
 	int matrixId;
@@ -80,5 +83,7 @@ public class GameObject {
 		}
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	}
+	
+	public void update(Map map){}
 	
 }

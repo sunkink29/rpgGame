@@ -14,10 +14,10 @@ public class Collision {
 		Vector3f size = player.player.scale;
 		for (Room room: map.rooms) {
 			for (Enemy enemy: room.enemies) {
-				if (position.x - size.x/2 < enemy.position.x + enemy.scale.x/2 &&
-						position.x + size.x/2 > enemy.position.x - enemy.scale.x/2 &&
-						position.y - size.y/2 < enemy.position.y + enemy.scale.y/2 &&
-						position.y + size.y/2 > enemy.position.y - enemy.scale.y/2) {
+				if (position.x - size.x/2 < enemy.sword.position.x + enemy.sword.scale.x/2 &&
+						position.x + size.x/2 > enemy.sword.position.x - enemy.sword.scale.x/2 &&
+						position.y - size.y/2 < enemy.sword.position.y + enemy.sword.scale.y/2 &&
+						position.y + size.y/2 > enemy.sword.position.y - enemy.sword.scale.y/2) {
 				collisionDirection.add(0, 0, -1);
 				}
 			}

@@ -15,6 +15,8 @@ public class Room extends GameObject {
 	GameObject floor;
 	GameObject wall;
 	public ArrayList<GameObject> objects = new ArrayList<GameObject>();
+	public ArrayList<GameObject> addObjects = new ArrayList<GameObject>();
+	public ArrayList<GameObject> removeObjects = new ArrayList<GameObject>();
 	public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
 	public Room(Vector3f position, float length, float width) {
@@ -39,16 +41,20 @@ public class Room extends GameObject {
 			    0, 1, 2,
 			    2, 3, 0
 		};
-		wall = new GameObject(position, new Vector3f(0), new Vector3f(size, 0));
-		floor = new GameObject(position, new Vector3f(0.8f), new Vector3f(size, 0).sub(1, 1, 0));
-		floor.position.z -= 0.1f;
 		int[] square = Model.getModelIds("square", "general", vertices, elements);
 		int squareVao = square[0];
 		int squareProgramId = square[1];
+		
+		wall = new GameObject(position, new Vector3f(0), new Vector3f(size, 0));
+		floor = new GameObject(position, new Vector3f(0.8f), new Vector3f(size, 0).sub(1, 1, 0));
+		floor.position.z -= 0.1f;
 		wall.init(squareVao, squareProgramId);
 		floor.init(squareVao, squareProgramId);
 		for(Enemy enemy: enemies) {
 			enemy.init();
+		}
+		for(GameObject object: objects) {
+			object.init(squareVao, squareProgramId);
 		}
 	};
 	
@@ -77,11 +83,18 @@ public class Room extends GameObject {
 		    Enemy enemy = iter.next();
 
 		    if (!enemy.dead){
-		    	enemy.updateEnemy(map);
+		    	enemy.update(map);
 		    } else {
 		        iter.remove();
 		    }
 		}
+		for (GameObject object: objects){
+			object.update(map);
+		}
+		objects.addAll(addObjects);
+		objects.removeAll(removeObjects);
+		addObjects = new ArrayList<GameObject>();
+		removeObjects = new ArrayList<GameObject>();
 	}
 
 }
