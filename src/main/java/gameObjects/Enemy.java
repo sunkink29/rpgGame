@@ -60,6 +60,7 @@ public class Enemy extends GameObject {
 		this.detectionDistance = detectionDistance;
 	}
 	
+	@Override
 	public void init() {
 		initRenderer(defaultShapes.Square.getInstance());
 		sword = new GameObject(position, new Vector3f(0.88f, 0.46f, 0.46f), new Vector3f(0.2f, 0.4f, 1));
@@ -72,21 +73,12 @@ public class Enemy extends GameObject {
 		super.renderObject(viewMatrix);
 	}
 	
+	@Override
 	public void update(Map map) {
 		Vector3f collisionDirection = Collision.isEnemyColliding(map, this);
-		Vector3f targetDirection = new Vector3f();
+		Vector3f targetDirection;
 //		System.out.println(health);
-		if (collisionDirection.z < 0) {
-			if (!isHit) {
-				health += collisionDirection.z;
-			}
-			isHit = true;
-		} else {
-			isHit = false;
-		}
-		if (health <= 0) {
-			dead = true;
-		}
+		checkIfHit(collisionDirection.z, map);
 		if (!dead) {
 			float distance = position.distance(Player.currentPlayer.player.position);
 			boolean applyMovement = false;
@@ -123,48 +115,12 @@ public class Enemy extends GameObject {
 //				movementDirection = new Vector3f(temp, 0);
 			}
 			
-			// movement calculation
-			targetPoint.sub(position, targetDirection).normalize();
-			targetDirection.z = 0;
-			
-//			// rotation calculation
-			double playerDirection = Math.atan2(targetDirection.y, targetDirection.x);
-			playerDirection += -Math.PI/2;
-			
-			double rotation = (float) (this.rotation%(Math.PI*2));
-			
-			double rDistance =	playerDirection - rotation;
-			rDistance = mod((rDistance + Math.PI), Math.PI * 2) - Math.PI;
-			
-			rDistance = rDistance>=0?rDistance:Math.PI + (Math.PI + rDistance);
-			
-			float rDirection = -(rDistance>Math.PI?1:-1)/*-1*/;
-						
-			if (Math.abs(rDistance) > Math.PI / 128) {
-				this.rotation += rotationSpeed * Controls.deltaTime * rDirection;
-			}
-//			System.out.println(rDistance + " " + playerDirection + " " +  rotation + " " + rDirection + " " + this.rotation);
-
-			
-			// color calculation
-			if (collisionDirection.z < 0) {
-				color = new Vector3f(hurtColor);
-			} else {
-				color = new Vector3f(normalColor);
-			}
+			targetDirection = moveToPoint(targetPoint);
 			
 			// collision detection
 			targetDirection.sub(collisionDirection).normalize();
-//			if (targetDirection.x != 0){
-//				targetDirection.x /= targetDirection.x * (targetDirection.x<0?-1:1);
-//			}
-//			if (targetDirection.y != 0){
-//				targetDirection.y /= targetDirection.y * (targetDirection.y<0?-1:1);
-//			}
 			targetDirection.z = 0;
-			
-//			System.out.println(targetDirection);
-			
+						
 			// apply movement
 			if (applyMovement)
 				position.add(targetDirection.mul(Controls.deltaTime).mul(speed));
@@ -191,7 +147,49 @@ public class Enemy extends GameObject {
 		}
 	}
 	
-
+	void checkIfHit(float damage, Map map) {
+		if (damage < 0) {
+			if (!isHit) {
+				health += damage;
+			}
+			color = new Vector3f(hurtColor);
+			isHit = true;
+		} else {
+			color = new Vector3f(normalColor);
+			isHit = false;
+		}
+		if (health <= 0) {
+			dead = true;
+			map.removeObject(this);
+		}
+	}
+	
+	// returns movement direction
+	Vector3f moveToPoint(Vector3f targetPoint) {
+		Vector3f targetDirection = new Vector3f();
+		// movement calculation
+		targetPoint.sub(position,targetDirection).normalize();
+		targetDirection.z = 0;
+		
+//					// rotation calculation
+		double targetDirectionDegree = Math.atan2(targetDirection.y, targetDirection.x);
+		targetDirectionDegree += -Math.PI/2;
+		
+		double rotation = (float) (this.rotation%(Math.PI*2));
+		
+		double rDistance =	targetDirectionDegree - rotation;
+		rDistance = mod((rDistance + Math.PI), Math.PI * 2) - Math.PI;
+		
+		rDistance = rDistance>=0?rDistance:Math.PI + (Math.PI + rDistance);
+		
+		float rDirection = -(rDistance>Math.PI?1:-1)/*-1*/;
+					
+		if (Math.abs(rDistance) > Math.PI / 128) {
+			this.rotation += rotationSpeed * Controls.deltaTime * rDirection;
+		}
+		return targetDirection;
+	}
+	
 	void startAttackAnimation(){
 		isAttacking = true;
 		attackStartTime = glfwGetTime();

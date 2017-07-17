@@ -12,8 +12,9 @@ public class Collision {
 		Vector3f collisionDirection = isGameObjectColliding(map, player.player);
 		Vector3f position = player.player.position;
 		Vector3f size = player.player.scale;
-		for (Room room: map.rooms) {
-			for (Enemy enemy: room.enemies) {
+		for(GameObject object: map.objects) {
+			if (object.getClass() == Enemy.class) {
+				Enemy enemy = (Enemy) object;
 				if (position.x - size.x/2 < enemy.sword.position.x + enemy.sword.scale.x/2 &&
 						position.x + size.x/2 > enemy.sword.position.x - enemy.sword.scale.x/2 &&
 						position.y - size.y/2 < enemy.sword.position.y + enemy.sword.scale.y/2 &&

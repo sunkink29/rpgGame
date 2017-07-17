@@ -50,7 +50,7 @@ public class GameObject {
 	}
 	
 	public void init() {
-		
+		System.out.println(position);
 	}
 	
 	public void initRenderer(Shape shape) {

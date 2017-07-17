@@ -25,7 +25,7 @@ public class ProjectileLauncher extends GameObject {
 		if (glfwGetTime() - lastShot > 2) {
 			lastShot = glfwGetTime();
 			Projectile projectile = new Projectile(position, new Vector3f(0), new Vector3f(0.25f), rotation);
-			map.rooms.get(0).addObjects.add(projectile);
+			map.addObject(projectile);
 			projectile.initRenderer(defaultShapes.Square.getInstance());
 		}
 	}

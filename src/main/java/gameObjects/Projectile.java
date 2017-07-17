@@ -18,9 +18,9 @@ public class Projectile extends GameObject {
 		Vector3f targetDirection = new Vector3f(0, 1, 0);
 		position.add(targetDirection.mul(Controls.deltaTime).mul(speed));
 		Vector3f collision = Collision.isGameObjectColliding(map, this);
-		System.out.println(collision);
+//		System.out.println(collision);
 		if (!collision.equals(new Vector3f())) {
-			map.rooms.get(0).removeObjects.add(this);
+			map.removeObject(this);
 		}
 	}
 
