@@ -34,25 +34,11 @@ public class Player {
 	UniformShaderProperty[] shaderProperties;
 
 	public Player() {
-		float vertices2[] = {
-			     0.0f,  0.7f, // Top-left
-			     0.5f, -0.5f, // Top-right
-			    -0.5f, -0.5f, // Bottom-right
-		};
-		
-		int elements2[] = {
-			    2, 1, 0,
-		};
-		
-		int[] triangle = Model.getModelIds("triangle", "general", vertices2, elements2);
-		int triangleVao = triangle[0];
-		int triangleProgramID = triangle[1];
-		
 		shaderProperties = new UniformShaderProperty[] {new UniformShaderProperty("shaderPosition", new Vector2f(0, 0))};
 		player = new GameObject(playerPosition, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.5f),"general",shaderProperties);
 		sword = new GameObject(playerPosition, new Vector3f(0.88f, 0.46f, 0.46f), new Vector3f(0.2f, 0.4f, 1));
-		player.init(triangleVao, triangleProgramID);
-		sword.init(triangleVao, triangleProgramID);
+		player.initRenderer(defaultShapes.Triangle.getInstance());
+		sword.initRenderer(defaultShapes.Triangle.getInstance());
 		currentPlayer = this;
 	}
 	

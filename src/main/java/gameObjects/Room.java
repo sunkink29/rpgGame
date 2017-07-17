@@ -30,31 +30,16 @@ public class Room extends GameObject {
 	}
 	
 	public void init() {
-		float vertices[] = {
-			    -0.5f,  0.5f, // Top-left
-			     0.5f,  0.5f, // Top-right
-			     0.5f, -0.5f, // Bottom-right
-			    -0.5f, -0.5f  // Bottom-left
-		};
-		
-		int elements[] = {
-			    0, 1, 2,
-			    2, 3, 0
-		};
-		int[] square = Model.getModelIds("square", "general", vertices, elements);
-		int squareVao = square[0];
-		int squareProgramId = square[1];
-		
 		wall = new GameObject(position, new Vector3f(0), new Vector3f(size, 0));
 		floor = new GameObject(position, new Vector3f(0.8f), new Vector3f(size, 0).sub(1, 1, 0));
 		floor.position.z -= 0.1f;
-		wall.init(squareVao, squareProgramId);
-		floor.init(squareVao, squareProgramId);
+		wall.initRenderer(defaultShapes.Square.getInstance());
+		floor.initRenderer(defaultShapes.Square.getInstance());
 		for(Enemy enemy: enemies) {
 			enemy.init();
 		}
 		for(GameObject object: objects) {
-			object.init(squareVao, squareProgramId);
+			object.init();
 		}
 	};
 	

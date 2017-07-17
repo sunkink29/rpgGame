@@ -9,6 +9,7 @@ import java.nio.FloatBuffer;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 
+import defaultShapes.Shape;
 import rendering.Shader;
 
 public class GameObject {
@@ -48,7 +49,15 @@ public class GameObject {
 		programId = Shader.getProgramId(programName);
 	}
 	
-	public void init(int vao, int programID) {
+	public void init() {
+		
+	}
+	
+	public void initRenderer(Shape shape) {
+		initRenderer(shape.getVAO(), shape.getProgramId());
+	}
+	
+	public void initRenderer(int vao, int programID) {
 		this.vao = vao;
 		if (programId == -1)
 			programId = programID;

@@ -61,36 +61,9 @@ public class Enemy extends GameObject {
 	}
 	
 	public void init() {
-		float vertices[] = {
-			    -0.4f,  0.5f, // Top-left
-			     0.4f,  0.5f, // Top-right
-			     0.5f, -0.5f, // Bottom-right
-			    -0.5f, -0.5f  // Bottom-left
-		};
-		
-		int elements[] = {
-			    0, 1, 2,
-			    2, 3, 0
-		};
-		int[] square = Model.getModelIds("enemy", "general", vertices, elements);
-		int squareVao = square[0];
-		int squareProgramId = square[1];
-		init(squareVao, squareProgramId);
-		
-		float vertices2[] = {
-			     0.0f,  0.7f, // Top-left
-			     0.5f, -0.5f, // Top-right
-			    -0.5f, -0.5f, // Bottom-right
-		};
-		
-		int elements2[] = {
-			    2, 1, 0,
-		};
-		int[] triangle = Model.getModelIds("triangle", "general", vertices2, elements2);
-		int triangleVao = triangle[0];
-		int triangleProgramID = triangle[1];
+		initRenderer(defaultShapes.Square.getInstance());
 		sword = new GameObject(position, new Vector3f(0.88f, 0.46f, 0.46f), new Vector3f(0.2f, 0.4f, 1));
-		sword.init(triangleVao, triangleProgramID);
+		sword.initRenderer(defaultShapes.Triangle.getInstance());
 	}
 	
 	@Override

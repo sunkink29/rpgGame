@@ -14,8 +14,8 @@ public class ProjectileLauncher extends GameObject {
 	}
 	
 	@Override
-	public void init(int vao, int programID) {
-		super.init(vao, programID);
+	public void init() {
+		super.initRenderer(defaultShapes.Square.getInstance());
 		lastShot = glfwGetTime();
 	}
 	
@@ -26,21 +26,7 @@ public class ProjectileLauncher extends GameObject {
 			lastShot = glfwGetTime();
 			Projectile projectile = new Projectile(position, new Vector3f(0), new Vector3f(0.25f), rotation);
 			map.rooms.get(0).addObjects.add(projectile);
-			float vertices[] = {
-				    -0.5f,  0.5f, // Top-left
-				     0.5f,  0.5f, // Top-right
-				     0.5f, -0.5f, // Bottom-right
-				    -0.5f, -0.5f  // Bottom-left
-			};
-			
-			int elements[] = {
-				    0, 1, 2,
-				    2, 3, 0
-			};
-			int[] square = Model.getModelIds("square", "general", vertices, elements);
-			int squareVao = square[0];
-			int squareProgramId = square[1];
-			projectile.init(squareVao, squareProgramId);
+			projectile.initRenderer(defaultShapes.Square.getInstance());
 		}
 	}
 }
