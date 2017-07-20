@@ -5,10 +5,13 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 
+import compoents.Component;
+import compoents.Transform;
 import defaultShapes.Shape;
 import rendering.Shader;
 
@@ -16,10 +19,9 @@ public class GameObject {
 	
 	public String name;
 	public String[] tags;
+	public Transform transform = new Transform();
+	public ArrayList<Component> components = new ArrayList<Component>();
 	public GameObject[] childObjects;
-	public Vector3f position;
-	Vector3f scale;
-	float rotation;
 	Vector3f color;
 	int vao;
 	int programId = -1;
@@ -29,28 +31,29 @@ public class GameObject {
 	UniformShaderProperty[] shaderProperties;
 	
 	public GameObject(Vector3f position, Vector3f color) {
-		this(position, color, new Vector3f(), 0);
+		this(position, color, new Vector2f(), 0);
 	}
 	
-	public GameObject(Vector3f position, Vector3f color, Vector3f scale) {
+	public GameObject(Vector3f position, Vector3f color, Vector2f scale) {
 		this(position, color, scale, 0);
 	}
 	
-	public GameObject(Vector3f position, Vector3f color, Vector3f scale, float rotation) {
-		this.position = new Vector3f(position);
+	public GameObject(Vector3f position, Vector3f color, Vector2f scale, float rotation) {
+		components.add(transform);
+		transform.setPosition(position);
+		transform.setScale(scale);
+		transform.setRotation(rotation);;
 		this.color = new Vector3f(color);
-		this.scale = scale;
-		this.rotation = rotation;
 	}
 	
-	public GameObject(Vector3f position, Vector3f color, Vector3f scale, String programName, UniformShaderProperty[] shaderProperties) {
+	public GameObject(Vector3f position, Vector3f color, Vector2f scale, String programName, UniformShaderProperty[] shaderProperties) {
 		this(position, color, scale);
 		this.shaderProperties = shaderProperties;
 		programId = Shader.getProgramId(programName);
 	}
 	
 	public void init() {
-		System.out.println(position);
+		
 	}
 	
 	public void initRenderer(Shape shape) {
@@ -77,7 +80,7 @@ public class GameObject {
 		FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(16);
 		FloatBuffer positionMatrix = BufferUtils.createFloatBuffer(16);
 		Matrix4f dest = new Matrix4f();
-		positionMatrix = new Matrix4f().translate(position).rotate(rotation, new Vector3f(0, 0, 1)).scale(scale).get(positionMatrix);
+		positionMatrix = new Matrix4f().translate(transform.getPosition()).rotate(transform.getRotation(), new Vector3f(0, 0, 1)).scale(new Vector3f(transform.getScale(), 0)).get(positionMatrix);
 		floatBuffer =  viewMatrix.get(floatBuffer);
 		glUniformMatrix4fv(matrixId, false, floatBuffer);
 		glUniformMatrix4fv(wMatrixId, false, positionMatrix);

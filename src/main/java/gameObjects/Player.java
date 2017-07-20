@@ -35,8 +35,8 @@ public class Player {
 
 	public Player() {
 		shaderProperties = new UniformShaderProperty[] {new UniformShaderProperty("shaderPosition", new Vector2f(0, 0))};
-		player = new GameObject(playerPosition, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.5f),"general",shaderProperties);
-		sword = new GameObject(playerPosition, new Vector3f(0.88f, 0.46f, 0.46f), new Vector3f(0.2f, 0.4f, 1));
+		player = new GameObject(playerPosition, new Vector3f(0.0f, 0.0f, 0.0f), new Vector2f(0.5f),"general",shaderProperties);
+		sword = new GameObject(playerPosition, new Vector3f(0.88f, 0.46f, 0.46f), new Vector2f(0.2f, 0.4f));
 		player.initRenderer(defaultShapes.Triangle.getInstance());
 		sword.initRenderer(defaultShapes.Triangle.getInstance());
 		currentPlayer = this;
@@ -116,10 +116,10 @@ public class Player {
 		float swordOffsetRadius = (float) Math.sqrt(Math.pow(currentSwordOffset.x, 2) + Math.pow(currentSwordOffset.y, 2));
 		swordPosition.add((float)Math.cos(rotation + swordOffsetAngle) * -swordOffsetRadius, (float)Math.sin(rotation + swordOffsetAngle) * -swordOffsetRadius,0);
 		
-		player.position = getPlayerPosition();
-		player.rotation = (float) rotation;
-		sword.position = swordPosition;
-		sword.rotation = (float) rotation;
+		player.transform.setPosition(getPlayerPosition());
+		player.transform.setRotation((float) rotation);
+		sword.transform.setPosition(swordPosition);
+		sword.transform.setRotation((float) rotation);
 		
 		if (glfwGetKey(window, GLFW_KEY_F ) == GLFW_PRESS){
 			System.out.println(playerPosition);

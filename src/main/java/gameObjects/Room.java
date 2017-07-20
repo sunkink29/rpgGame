@@ -26,9 +26,10 @@ public class Room extends GameObject {
 	}
 	
 	public void init() {
-		wall = new GameObject(position, new Vector3f(0), new Vector3f(size, 0));
-		floor = new GameObject(position, new Vector3f(0.8f), new Vector3f(size, 0).sub(1, 1, 0));
-		floor.position.z -= 0.1f;
+		wall = new GameObject(transform.getPosition(), new Vector3f(0), size);
+		Vector3f floorPos = transform.getPosition();
+		floorPos.z += -0.1f;
+		floor = new GameObject(floorPos, new Vector3f(0.8f), new Vector2f(size).sub(1, 1));
 		wall.initRenderer(defaultShapes.Square.getInstance());
 		floor.initRenderer(defaultShapes.Square.getInstance());
 	};

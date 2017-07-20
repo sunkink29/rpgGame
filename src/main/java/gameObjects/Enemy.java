@@ -34,22 +34,24 @@ public class Enemy extends GameObject {
 	int attackState = 1;
 
 	
-	public Enemy(Vector3f position, Vector3f color, Vector3f scale) {
+	public Enemy(Vector3f position, Vector3f color, Vector2f scale) {
 		this(position, color, scale, 1);
 	}
 	
-	public Enemy(Vector3f position, Vector3f color, Vector3f scale, int health) {
+	public Enemy(Vector3f position, Vector3f color, Vector2f scale, int health) {
 		this(position, color, scale, health, new Vector2f[]{new Vector2f(position.x,position.y)}, 0);
 	}
 	
-	public Enemy(Vector3f position, Vector3f color, Vector3f scale, int health, Vector2f[] path, int pathStartIndex) {
+	public Enemy(Vector3f position, Vector3f color, Vector2f scale, int health, Vector2f[] path, int pathStartIndex) {
 		this(position, color, scale, health, path, pathStartIndex, 5);
 	}
 	
-	public Enemy(Vector3f position, Vector3f color, Vector3f scale, int health, Vector2f[] path, int pathStartIndex, float detectionDistance) {
+	public Enemy(Vector3f position, Vector3f color, Vector2f scale, int health, Vector2f[] path, int pathStartIndex, float detectionDistance) {
 		super(position, color, scale);
 		currentPathPoint = pathStartIndex;
-		this.position.z = -1;
+		Vector3f newPos = transform.getPosition();
+		newPos.z = -1;
+		transform.setPosition(newPos);
 		StartPosition = position;
 		this.health = health;
 		this.path = new Vector2f[path.length];
@@ -63,7 +65,7 @@ public class Enemy extends GameObject {
 	@Override
 	public void init() {
 		initRenderer(defaultShapes.Square.getInstance());
-		sword = new GameObject(position, new Vector3f(0.88f, 0.46f, 0.46f), new Vector3f(0.2f, 0.4f, 1));
+		sword = new GameObject(transform.getPosition(), new Vector3f(0.88f, 0.46f, 0.46f), new Vector2f(0.2f, 0.4f));
 		sword.initRenderer(defaultShapes.Triangle.getInstance());
 	}
 	
@@ -80,12 +82,12 @@ public class Enemy extends GameObject {
 //		System.out.println(health);
 		checkIfHit(collisionDirection.z, map);
 		if (!dead) {
-			float distance = position.distance(Player.currentPlayer.player.position);
+			float distance = transform.getPosition().distance(Player.currentPlayer.player.transform.getPosition());
 			boolean applyMovement = false;
 			Vector3f targetPoint = null;
 //			System.out.println(distance);
 			if (distance < detectionDistance) {
-				targetPoint = Player.currentPlayer.player.position;
+				targetPoint = Player.currentPlayer.player.transform.getPosition();
 				if (distance > 1) {
 					applyMovement = true;
 //					Player.currentPlayer.player.position.sub(position, movementDirection).normalize().mul(1.5f);
@@ -99,7 +101,7 @@ public class Enemy extends GameObject {
 				if (followingPlayer) {
 					followingPlayer = false;
 					int closestWayPoint = 0;
-					Vector2f position = new Vector2f(this.position.x, this.position.y);
+					Vector2f position = new Vector2f(transform.getPosition().x, transform.getPosition().y);
 					for (int i=0; i < path.length; i++) {
 						if (position.distance(path[i]) < position.distance(path[closestWayPoint])) {
 							closestWayPoint = i;
@@ -122,22 +124,24 @@ public class Enemy extends GameObject {
 			targetDirection.z = 0;
 						
 			// apply movement
-			if (applyMovement)
-				position.add(targetDirection.mul(Controls.deltaTime).mul(speed));
+			if (applyMovement) {
+				Vector3f newPos = transform.getPosition().add(targetDirection.mul(Controls.deltaTime).mul(speed));
+				transform.setPosition(newPos);
+			}
 			
 			// calculate sword position
 			attackAnimation();
-			Vector3f swordPosition = new Vector3f(position);
+			Vector3f swordPosition = transform.getPosition();
 			float swordOffsetAngle = (float) Math.atan2(currentSwordOffset.y, currentSwordOffset.x);
 			float swordOffsetRadius = (float) Math.sqrt(Math.pow(currentSwordOffset.x, 2) + Math.pow(currentSwordOffset.y, 2));
-			swordPosition.add((float)Math.cos(rotation + swordOffsetAngle) * -swordOffsetRadius, (float)Math.sin(rotation + swordOffsetAngle) * -swordOffsetRadius,0);
-			sword.position = swordPosition;
-			sword.rotation = (float) rotation;
+			swordPosition.add((float)Math.cos(transform.getRotation() + swordOffsetAngle) * -swordOffsetRadius, (float)Math.sin(transform.getRotation() + swordOffsetAngle) * -swordOffsetRadius,0);
+			sword.transform.setPosition(swordPosition);
+			sword.transform.setRotation(transform.getRotation());
 
 			
 			// go to next wayPoint
-			if(path[currentPathPoint].distance(new Vector2f(position.x, position.y)) < .05) {
-				position = new Vector3f(path[currentPathPoint], position.z);
+			if(path[currentPathPoint].distance(new Vector2f(transform.getPosition().x, transform.getPosition().y)) < .05) {
+				transform.setPosition(new Vector3f(path[currentPathPoint], transform.getPosition().z));
 				if (currentPathPoint + 1 >= path.length) {
 					currentPathPoint = 0;
 				} else {
@@ -168,14 +172,14 @@ public class Enemy extends GameObject {
 	Vector3f moveToPoint(Vector3f targetPoint) {
 		Vector3f targetDirection = new Vector3f();
 		// movement calculation
-		targetPoint.sub(position,targetDirection).normalize();
+		targetPoint.sub(transform.getPosition(),targetDirection).normalize();
 		targetDirection.z = 0;
 		
 //					// rotation calculation
 		double targetDirectionDegree = Math.atan2(targetDirection.y, targetDirection.x);
 		targetDirectionDegree += -Math.PI/2;
 		
-		double rotation = (float) (this.rotation%(Math.PI*2));
+		double rotation = (float) (transform.getRotation()%(Math.PI*2));
 		
 		double rDistance =	targetDirectionDegree - rotation;
 		rDistance = mod((rDistance + Math.PI), Math.PI * 2) - Math.PI;
@@ -185,7 +189,8 @@ public class Enemy extends GameObject {
 		float rDirection = -(rDistance>Math.PI?1:-1)/*-1*/;
 					
 		if (Math.abs(rDistance) > Math.PI / 128) {
-			this.rotation += rotationSpeed * Controls.deltaTime * rDirection;
+			float newRot = transform.getRotation() + rotationSpeed * Controls.deltaTime * rDirection;
+			transform.setRotation(newRot);
 		}
 		return targetDirection;
 	}

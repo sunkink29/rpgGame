@@ -121,7 +121,7 @@ public class Main {
 //		map.addObject(new Enemy(new Vector3f(12, 12, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 2));
 //		map.addObject(new Enemy(new Vector3f(0, 12, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 1));
 //		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 0));
-		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector3f(0), new Vector3f(0.5f),5));
+//		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector3f(0), new Vector2f(0.5f),5));
 		map.addObject(new ProjectileLauncher(new Vector3f(0, 0, -1), new Vector3f(1), 0));
 		
 		Player player = new Player();

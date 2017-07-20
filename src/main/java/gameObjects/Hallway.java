@@ -17,9 +17,15 @@ public class Hallway extends Room {
 	
 	@Override
 	public void init() {
+		Vector3f newPos = transform.getPosition();
+		newPos.z = -0.2f;
+		transform.setPosition(newPos);
 		super.init();
 		Vector2f scale = new Vector2f(4, 4).mul(direction);
-		floor.scale.add(new Vector3f(scale, 0));
+		Vector2f floorScale = floor.transform.getScale();
+		scale.x += floorScale.x;
+		scale.y += floorScale.y;
+		floor.transform.setScale(scale);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package gameObjects;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import rendering.Model;
@@ -10,7 +11,7 @@ public class ProjectileLauncher extends GameObject {
 	double lastShot;
 	
 	public ProjectileLauncher(Vector3f position, Vector3f color, float rotation) {
-		super(position, color, new Vector3f(.5f), rotation);
+		super(position, color, new Vector2f(.5f), rotation);
 	}
 	
 	@Override
@@ -24,7 +25,7 @@ public class ProjectileLauncher extends GameObject {
 //		position = Player.currentPlayer.player.position;
 		if (glfwGetTime() - lastShot > 2) {
 			lastShot = glfwGetTime();
-			Projectile projectile = new Projectile(position, new Vector3f(0), new Vector3f(0.25f), rotation);
+			Projectile projectile = new Projectile(transform.getPosition(), new Vector3f(0), new Vector2f(0.25f), transform.getRotation());
 			map.addObject(projectile);
 			projectile.initRenderer(defaultShapes.Square.getInstance());
 		}
