@@ -6,17 +6,19 @@ import org.joml.Vector3f;
 import rendering.Model;
 import static org.lwjgl.glfw.GLFW.*;
 
+import components.Transform;
+
 public class ProjectileLauncher extends GameObject {
 	
 	double lastShot;
 	
 	public ProjectileLauncher(Vector3f position, Vector3f color, float rotation) {
-		super(position, color, new Vector2f(.5f), rotation);
+		super(new Transform(position,new Vector2f(0.5f),rotation), defaultShapes.Square.getInstance());
+		renderer.setColor(color);
 	}
 	
 	@Override
 	public void init() {
-		super.initRenderer(defaultShapes.Square.getInstance());
 		lastShot = glfwGetTime();
 	}
 	
@@ -25,9 +27,8 @@ public class ProjectileLauncher extends GameObject {
 //		position = Player.currentPlayer.player.position;
 		if (glfwGetTime() - lastShot > 2) {
 			lastShot = glfwGetTime();
-			Projectile projectile = new Projectile(transform.getPosition(), new Vector3f(0), new Vector2f(0.25f), transform.getRotation());
+			Projectile projectile = new Projectile(new Transform(transform.getPosition(), new Vector2f(0.25f), 0), defaultShapes.Square.getInstance());
 			map.addObject(projectile);
-			projectile.initRenderer(defaultShapes.Square.getInstance());
 		}
 	}
 }

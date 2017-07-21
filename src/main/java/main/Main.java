@@ -117,11 +117,11 @@ public class Main {
 		map.addRoom(new Hallway(new Vector3f(-6, 12, 0), new Vector2f(3, 3), new Vector2f(1, 0)));
 		map.addRoom(new Hallway(new Vector3f(-21, 12, 0), new Vector2f(9, 3), new Vector2f(1, 0)));
 		map.addRoom(new Hallway(new Vector3f(-21, 15, 0), new Vector2f(3, 3), new Vector2f(0, 1)));
-//		map.addObject(new Enemy(new Vector3f(12, 0, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 3));
-//		map.addObject(new Enemy(new Vector3f(12, 12, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 2));
-//		map.addObject(new Enemy(new Vector3f(0, 12, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 1));
-//		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector3f(0), new Vector3f(0.5f),5, enemyPath, 0));
-//		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector3f(0), new Vector2f(0.5f),5));
+		map.addObject(new Enemy(new Vector3f(12, 0, 0), new Vector2f(0.5f),5, enemyPath, 3));
+//		map.addObject(new Enemy(new Vector3f(12, 12, 0), new Vector2f(0.5f),5, enemyPath, 2));
+//		map.addObject(new Enemy(new Vector3f(0, 12, 0), new Vector2f(0.5f),5, enemyPath, 1));
+//		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector2f(0.5f),5, enemyPath, 0));
+//		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector2f(0.5f),5));
 		map.addObject(new ProjectileLauncher(new Vector3f(0, 0, -1), new Vector3f(1), 0));
 		
 		Player player = new Player();

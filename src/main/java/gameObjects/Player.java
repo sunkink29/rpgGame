@@ -8,12 +8,11 @@ import java.nio.IntBuffer;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 
+import components.Transform;
+
 import java.lang.Math;
 
-import javax.swing.text.Position;
-
 import rendering.Controls;
-import rendering.Model;
 
 public class Player {
 	
@@ -31,14 +30,15 @@ public class Player {
 	float speed = 5.0f; // 3 units / second
 	public Vector3f movementDirection = new Vector3f();
 	float health = 10;
-	UniformShaderProperty[] shaderProperties;
+	USP[] shaderProperties;
 
 	public Player() {
-		shaderProperties = new UniformShaderProperty[] {new UniformShaderProperty("shaderPosition", new Vector2f(0, 0))};
-		player = new GameObject(playerPosition, new Vector3f(0.0f, 0.0f, 0.0f), new Vector2f(0.5f),"general",shaderProperties);
-		sword = new GameObject(playerPosition, new Vector3f(0.88f, 0.46f, 0.46f), new Vector2f(0.2f, 0.4f));
-		player.initRenderer(defaultShapes.Triangle.getInstance());
-		sword.initRenderer(defaultShapes.Triangle.getInstance());
+		shaderProperties = new USP[] {new USP("shaderPosition", new Vector2f(0, 0))};
+		player = new GameObject(new Transform(playerPosition, new Vector2f(0.5f),0), defaultShapes.Triangle.getInstance());
+		player.renderer.setShaderProperties(shaderProperties);
+		
+		sword = new GameObject(new Transform(playerPosition, new Vector2f(0.2f, 0.4f), 0), defaultShapes.Triangle.getInstance());
+		sword.renderer.setColor(new Vector3f(0.88f, 0.46f, 0.46f));
 		currentPlayer = this;
 	}
 	
@@ -102,9 +102,9 @@ public class Player {
 		}
 		health += movementDirection.z;
 		if (movementDirection.z != 0) {
-			player.color = new Vector3f(1);
+			player.renderer.setColor(new Vector3f(1));
 		} else {
-			player.color = new Vector3f();
+			player.renderer.setColor(new Vector3f());
 		}
 		movementDirection.z = 0;
 		setPlayerPosition(getPlayerPosition().add(movementDirection.mul(Controls.deltaTime,dest).mul(speed)));

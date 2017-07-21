@@ -4,6 +4,9 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 import org.joml.*;
 
+import components.Renderer;
+import components.Transform;
+
 import java.lang.Math;
 
 import rendering.Controls;
@@ -34,20 +37,21 @@ public class Enemy extends GameObject {
 	int attackState = 1;
 
 	
-	public Enemy(Vector3f position, Vector3f color, Vector2f scale) {
-		this(position, color, scale, 1);
+	public Enemy(Vector3f position, Vector2f scale) {
+		this(position, scale, 1);
 	}
 	
-	public Enemy(Vector3f position, Vector3f color, Vector2f scale, int health) {
-		this(position, color, scale, health, new Vector2f[]{new Vector2f(position.x,position.y)}, 0);
+	public Enemy(Vector3f position, Vector2f scale, int health) {
+		this(position, scale, health, new Vector2f[]{new Vector2f(position.x,position.y)}, 0);
 	}
 	
-	public Enemy(Vector3f position, Vector3f color, Vector2f scale, int health, Vector2f[] path, int pathStartIndex) {
-		this(position, color, scale, health, path, pathStartIndex, 5);
+	public Enemy(Vector3f position, Vector2f scale, int health, Vector2f[] path, int pathStartIndex) {
+		this(position, scale, health, path, pathStartIndex, 5);
 	}
 	
-	public Enemy(Vector3f position, Vector3f color, Vector2f scale, int health, Vector2f[] path, int pathStartIndex, float detectionDistance) {
-		super(position, color, scale);
+	public Enemy(Vector3f position, Vector2f scale, int health, Vector2f[] path, int pathStartIndex, float detectionDistance) {
+		super(new Transform(position, scale, 0),defaultShapes.Square.getInstance());
+		renderer.setColor(new Vector3f(0));
 		currentPathPoint = pathStartIndex;
 		Vector3f newPos = transform.getPosition();
 		newPos.z = -1;
@@ -64,10 +68,10 @@ public class Enemy extends GameObject {
 	
 	@Override
 	public void init() {
-		initRenderer(defaultShapes.Square.getInstance());
-		sword = new GameObject(transform.getPosition(), new Vector3f(0.88f, 0.46f, 0.46f), new Vector2f(0.2f, 0.4f));
-		sword.initRenderer(defaultShapes.Triangle.getInstance());
+		sword = new GameObject(new Transform(transform.getPosition(), new Vector2f(0.2f, 0.4f), 0), defaultShapes.Triangle.getInstance());
+		sword.renderer.setColor( new Vector3f(0.88f, 0.46f, 0.46f));
 	}
+	//transform.getPosition(), new Vector3f(0.88f, 0.46f, 0.46f), new Vector2f(0.2f, 0.4f)
 	
 	@Override
 	public void renderObject(Matrix4f viewMatrix) {
@@ -156,10 +160,10 @@ public class Enemy extends GameObject {
 			if (!isHit) {
 				health += damage;
 			}
-			color = new Vector3f(hurtColor);
+			renderer.setColor(new Vector3f(hurtColor));
 			isHit = true;
 		} else {
-			color = new Vector3f(normalColor);
+			renderer.setColor(new Vector3f(normalColor));
 			isHit = false;
 		}
 		if (health <= 0) {
