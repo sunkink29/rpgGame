@@ -8,6 +8,7 @@ import java.nio.IntBuffer;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 
+import components.Collider;
 import components.Transform;
 
 import java.lang.Math;
@@ -36,6 +37,7 @@ public class Player {
 		shaderProperties = new USP[] {new USP("shaderPosition", new Vector2f(0, 0))};
 		player = new GameObject(new Transform(playerPosition, new Vector2f(0.5f),0), defaultShapes.Triangle.getInstance());
 		player.renderer.setShaderProperties(shaderProperties);
+		player.addComponent(new Collider(false));
 		
 		sword = new GameObject(new Transform(playerPosition, new Vector2f(0.2f, 0.4f), 0), defaultShapes.Triangle.getInstance());
 		sword.renderer.setColor(new Vector3f(0.88f, 0.46f, 0.46f));
@@ -46,8 +48,11 @@ public class Player {
 		player.renderObject(viewMatrix);
 		sword.renderObject(viewMatrix);
 	}
-	
+		
 	public void updatePlayer(long window , Map map) {
+		playerPosition = player.transform.getPosition();
+		player.update(map);
+		sword.update(map);
 		Vector3f direction = new Vector3f(0, 0, 1);
 		Vector3f right = new Vector3f(-1, 0, 0);
 		Vector3f dest = new Vector3f();
@@ -92,7 +97,7 @@ public class Player {
 		.add(getPlayerPosition().x, -getPlayerPosition().y); // transform the cursor position to be relative to the player orgin
 		double rotation = Math.atan2(cursorPos.x, cursorPos.y); // get an angle from the x and y coordinates
 		
-		Vector3f playerCollision = Collision.isPlayerColliding(map, this);
+		Vector3f playerCollision = new Vector3f(); //Collision.isPlayerColliding(map, this);
 		movementDirection.sub(playerCollision);
 		if (movementDirection.x != 0){
 			movementDirection.x /= movementDirection.x * movementDirection.x<0?-1:1;

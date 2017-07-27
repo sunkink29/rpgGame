@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 import org.joml.*;
 
+import components.Collider;
 import components.Renderer;
 import components.Transform;
 
@@ -64,6 +65,7 @@ public class Enemy extends GameObject {
 //			this.path[i].add(position.x,position.y);
 		}
 		this.detectionDistance = detectionDistance;
+		addComponent(new Collider(false));
 	}
 	
 	@Override
@@ -81,6 +83,7 @@ public class Enemy extends GameObject {
 	
 	@Override
 	public void update(Map map) {
+		super.update(map);
 		Vector3f collisionDirection = Collision.isEnemyColliding(map, this);
 		Vector3f targetDirection;
 //		System.out.println(health);
@@ -124,7 +127,7 @@ public class Enemy extends GameObject {
 			targetDirection = moveToPoint(targetPoint);
 			
 			// collision detection
-			targetDirection.sub(collisionDirection).normalize();
+			//targetDirection.sub(collisionDirection).normalize();
 			targetDirection.z = 0;
 						
 			// apply movement

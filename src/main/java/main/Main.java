@@ -33,6 +33,9 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
+
+import components.Collider;
+
 import org.lwjgl.stb.STBEasyFont;
 
 import rendering.Controls;
@@ -122,7 +125,8 @@ public class Main {
 //		map.addObject(new Enemy(new Vector3f(0, 12, 0), new Vector2f(0.5f),5, enemyPath, 1));
 //		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector2f(0.5f),5, enemyPath, 0));
 //		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector2f(0.5f),5));
-		map.addObject(new ProjectileLauncher(new Vector3f(0, 0, -1), new Vector3f(1), 0));
+//		map.addObject(new ProjectileLauncher(new Vector3f(0f, 0, -1), new Vector3f(1)));
+//		map.addObject(new ProjectileLauncher(new Vector3f(-12, 12, -1), new Vector3f(1), new Vector3f(1,0,0)));
 		
 		Player player = new Player();
 		
@@ -142,10 +146,11 @@ public class Main {
 			map.updateMap();
 			map.renderMap(mvp);
 			player.updatePlayer(window, map);
+			Collider.checkCollisions(map);
 			player.renderPlayer(mvp);
 		    glfwSwapBuffers(window);
 		    glfwPollEvents();
-		    while (glfwGetTime() - startTime < 1/60.0f){}
+//		    while (glfwGetTime() - startTime < 1/60.0f){}
 		    if (glfwGetTime() - lastfCountTime >= 3) {
 		    	System.out.println(frames/(glfwGetTime() - lastfCountTime));
 		    	lastfCountTime = glfwGetTime();

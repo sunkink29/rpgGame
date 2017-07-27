@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.joml.*;
 
+import components.Collider;
 import components.Component;
 import components.Renderer;
 import components.Transform;
@@ -40,6 +41,15 @@ public class GameObject {
 		return newComponent;
 	}
 	
+	public <T extends Component> T getComponent(T type) {
+		for (Component component: components) {
+			if (component.getClass() == type.getClass()) {
+				return (T)component;
+			}
+		}
+		return null;
+	}
+	
 	public void init() {}
 	public void update(Map map){
 		for(Component component: components) {
@@ -51,5 +61,7 @@ public class GameObject {
 			renderer.render(viewMatrix);
 		}
 	}
+	
+	public void objectCollided(Collider otherObject) {}
 	
 }

@@ -7,13 +7,14 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import components.Collider;
 import components.Transform;
 
 public class Room extends GameObject {
 	
 	Vector2f size;
-	GameObject floor;
-	GameObject wall;
+	public GameObject floor;
+	public GameObject wall;
 
 	public Room(Vector3f position, float length, float width) {
 		this(position, new Vector2f(length, width));
@@ -31,6 +32,7 @@ public class Room extends GameObject {
 		floorPos.z += -0.1f;
 		floor = new GameObject(new Transform(floorPos, new Vector2f(size).sub(1,1), 0), defaultShapes.Square.getInstance());
 		floor.renderer.setColor(new Vector3f(0.8f));
+		addComponent(new Collider(true));
 	};
 	
 	@Override
@@ -43,8 +45,9 @@ public class Room extends GameObject {
 		return false;
 	}
 	
-	public void updateRoom(Map map){
-		
+	@Override
+	public void update(Map map){
+		super.update(map);
 	}
 
 }
