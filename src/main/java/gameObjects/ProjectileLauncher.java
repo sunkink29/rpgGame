@@ -16,7 +16,7 @@ public class ProjectileLauncher extends GameObject {
 	
 	public ProjectileLauncher(Vector3f position, Vector3f color) {
 		super(new Transform(position,new Vector2f(0.5f),0), defaultShapes.Square.getInstance());
-		addComponent(new Collider(true));
+		addComponent(new Collider(true, CollisionObjs.STATICOBJECT));
 		renderer.setColor(color);
 	}
 	

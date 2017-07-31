@@ -19,6 +19,7 @@ import gameObjects.GameObject;
 import gameObjects.Hallway;
 import gameObjects.Map;
 import gameObjects.Player;
+import gameObjects.Projectile;
 import gameObjects.ProjectileLauncher;
 import gameObjects.Room;
 
@@ -35,10 +36,10 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import components.Collider;
+import components.Transform;
 
 import org.lwjgl.stb.STBEasyFont;
 
-import rendering.Controls;
 import rendering.Model;
 
 public class Main {
@@ -143,11 +144,11 @@ public class Main {
 			Controls.computeMatricesFromInputs(window);
 			Matrix4f mvp = Controls.getProjectionMatrix().mul(Controls.getViewMatrix());
 			
-			map.updateMap();
-			map.renderMap(mvp);
 			player.updatePlayer(window, map);
+			map.updateMap();
 			Collider.checkCollisions(map);
 			player.renderPlayer(mvp);
+			map.renderMap(mvp);
 		    glfwSwapBuffers(window);
 		    glfwPollEvents();
 //		    while (glfwGetTime() - startTime < 1/60.0f){}

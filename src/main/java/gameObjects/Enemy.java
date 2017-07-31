@@ -7,13 +7,13 @@ import org.joml.*;
 import components.Collider;
 import components.Renderer;
 import components.Transform;
+import main.Controls;
 
 import java.lang.Math;
 
-import rendering.Controls;
 import rendering.Model;
 
-public class Enemy extends GameObject {
+public class Enemy extends GameObject implements Damageable {
 
 	Vector3f normalColor = new Vector3f(0.1f, 0.5f, 0.1f);
 	Vector3f hurtColor = new Vector3f(1, 0, 0);
@@ -24,6 +24,7 @@ public class Enemy extends GameObject {
 	int health;
 	public boolean dead = false;
 	public boolean isHit = false;
+	public boolean damaged = false;
 	Vector2f[] path;
 	int currentPathPoint = 0;
 	float detectionDistance;
@@ -52,7 +53,7 @@ public class Enemy extends GameObject {
 	
 	public Enemy(Vector3f position, Vector2f scale, int health, Vector2f[] path, int pathStartIndex, float detectionDistance) {
 		super(new Transform(position, scale, 0),defaultShapes.Square.getInstance());
-		renderer.setColor(new Vector3f(0));
+		renderer.setColor(new Vector3f(normalColor));
 		currentPathPoint = pathStartIndex;
 		Vector3f newPos = transform.getPosition();
 		newPos.z = -1;
@@ -65,12 +66,12 @@ public class Enemy extends GameObject {
 //			this.path[i].add(position.x,position.y);
 		}
 		this.detectionDistance = detectionDistance;
-		addComponent(new Collider(false));
+		addComponent(new Collider(false, CollisionObjs.ENEMY));
 	}
 	
 	@Override
 	public void init() {
-		sword = new GameObject(new Transform(transform.getPosition(), new Vector2f(0.2f, 0.4f), 0), defaultShapes.Triangle.getInstance());
+		sword = new Sword(new Transform(transform.getPosition(), new Vector2f(0.2f, 0.4f), 0), (CollisionObjs.PLAYER | CollisionObjs.DESTRUCTIBLEOBEJECT));
 		sword.renderer.setColor( new Vector3f(0.88f, 0.46f, 0.46f));
 	}
 	//transform.getPosition(), new Vector3f(0.88f, 0.46f, 0.46f), new Vector2f(0.2f, 0.4f)
@@ -84,20 +85,27 @@ public class Enemy extends GameObject {
 	@Override
 	public void update(Map map) {
 		super.update(map);
-		Vector3f collisionDirection = Collision.isEnemyColliding(map, this);
-		Vector3f targetDirection;
-//		System.out.println(health);
-		checkIfHit(collisionDirection.z, map);
+		sword.update(map);
+
+		if (!isHit && damaged) {
+			renderer.setColor(new Vector3f(normalColor));
+			damaged = false;
+		}
+		if (health <= 0) {
+			dead = true;
+			map.removeObject(this);
+		}
+		
 		if (!dead) {
-			float distance = transform.getPosition().distance(Player.currentPlayer.player.transform.getPosition());
+			Vector3f targetDirection;
+			float distance = transform.getPosition().distance(Player.currentPlayer.transform.getPosition());
 			boolean applyMovement = false;
 			Vector3f targetPoint = null;
-//			System.out.println(distance);
+			
 			if (distance < detectionDistance) {
-				targetPoint = Player.currentPlayer.player.transform.getPosition();
+				targetPoint = Player.currentPlayer.transform.getPosition();
 				if (distance > 1) {
 					applyMovement = true;
-//					Player.currentPlayer.player.position.sub(position, movementDirection).normalize().mul(1.5f);
 					followingPlayer = true;
 				} else {
 					if (!isAttacking) {
@@ -113,7 +121,6 @@ public class Enemy extends GameObject {
 						if (position.distance(path[i]) < position.distance(path[closestWayPoint])) {
 							closestWayPoint = i;
 						}
-//						System.out.println(position.distance(path[closestWayPoint]));
 					}
 					currentPathPoint = closestWayPoint;
 				}
@@ -125,10 +132,6 @@ public class Enemy extends GameObject {
 			}
 			
 			targetDirection = moveToPoint(targetPoint);
-			
-			// collision detection
-			//targetDirection.sub(collisionDirection).normalize();
-			targetDirection.z = 0;
 						
 			// apply movement
 			if (applyMovement) {
@@ -156,22 +159,27 @@ public class Enemy extends GameObject {
 				}
 			}
 		}
+		isHit = false;
 	}
 	
-	void checkIfHit(float damage, Map map) {
-		if (damage < 0) {
-			if (!isHit) {
-				health += damage;
+	public void damageObject(int damage) {
+		if (damage > 0) {
+			if (!damaged) {
+				health -= damage;
 			}
 			renderer.setColor(new Vector3f(hurtColor));
-			isHit = true;
-		} else {
-			renderer.setColor(new Vector3f(normalColor));
-			isHit = false;
+			damaged = true;
 		}
-		if (health <= 0) {
-			dead = true;
-			map.removeObject(this);
+	}
+	
+	public void objectCollided(Collider otherObject) {
+		if (otherObject.getGameObject() instanceof Sword) {
+			Sword sword = (Sword) otherObject.getGameObject();
+			if ((sword.damageObjects & CollisionObjs.ENEMY) != 0) {
+				if (!isHit) {
+					isHit = true;
+				}
+			}
 		}
 	}
 	

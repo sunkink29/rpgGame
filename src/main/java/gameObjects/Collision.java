@@ -9,9 +9,9 @@ import java.lang.Math;
 public class Collision {
 	
 	public static Vector3f isPlayerColliding(Map map, Player player) {
-		Vector3f collisionDirection = isGameObjectColliding(map, player.player);
-		Vector3f position = player.player.transform.getPosition();
-		Vector2f size = player.player.transform.getScale();
+		Vector3f collisionDirection = isGameObjectColliding(map, player);
+		Vector3f position = player.transform.getPosition();
+		Vector2f size = player.transform.getScale();
 		for(GameObject object: map.objects) {
 			if (object.getClass() == Enemy.class) {
 				Enemy enemy = (Enemy) object;

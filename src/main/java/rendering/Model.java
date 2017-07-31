@@ -53,6 +53,8 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
+import main.Controls;
+
 public class Model {
 
 	static ArrayList<ArrayList<String>> initializedModels = new ArrayList<ArrayList<String>>();

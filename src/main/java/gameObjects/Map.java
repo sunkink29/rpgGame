@@ -61,6 +61,11 @@ public class Map {
 	
 	public void removeObject(GameObject object) {
 		removeObjects.add(object);
+		Collider type = new Collider(true, CollisionObjs.STATICOBJECT);
+		Collider collider = object.getComponent(type);
+		if (collider == null) {
+			removeCollider(collider);
+		}
 	}
 	
 	public Collider[] getdynColliders() {

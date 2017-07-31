@@ -32,7 +32,7 @@ public class Room extends GameObject {
 		floorPos.z += -0.1f;
 		floor = new GameObject(new Transform(floorPos, new Vector2f(size).sub(1,1), 0), defaultShapes.Square.getInstance());
 		floor.renderer.setColor(new Vector3f(0.8f));
-		addComponent(new Collider(true));
+		addComponent(new Collider(true, CollisionObjs.WALL));
 	};
 	
 	@Override

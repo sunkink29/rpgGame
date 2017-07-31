@@ -6,7 +6,7 @@ import components.Collider;
 import components.Transform;
 import defaultShapes.Shape;
 import defaultShapes.Square;
-import rendering.Controls;
+import main.Controls;
 
 public class Projectile extends GameObject {
 	public float speed = 3;
@@ -20,7 +20,7 @@ public class Projectile extends GameObject {
 	
 	public Projectile(Transform transform, Shape shape) {
 		super(transform, shape);
-		addComponent(new Collider(false, true));
+		addComponent(new Collider(false, true, CollisionObjs.PROJECTILE));
 	}
 	
 	public Projectile(Transform transform, Shape shape, Vector3f targetDirection) {
@@ -54,7 +54,7 @@ public class Projectile extends GameObject {
 			startCollision++;
 		} else {
 			map.removeObject(this);
-			Collider type = new Collider(false);
+			Collider type = new Collider(true, CollisionObjs.STATICOBJECT);
 			Collider collider = getComponent(type);
 			map.removeCollider(collider);
 		}

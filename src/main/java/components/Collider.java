@@ -14,17 +14,19 @@ public class Collider extends Component {
 	
 	public boolean staticObject;
 	public boolean isTrigger;
+	public short collisionObjType;
 	ArrayList<Collider> dynCollisionObjs = new ArrayList<Collider>();
 	Vector2f ignoreDirection = new Vector2f(1);
 	boolean pushedByWall = false;
 	boolean addedToMap = false;
 	
-	public Collider(boolean staticObject) {
+	public Collider(boolean staticObject, short collisionObjType) {
 		this.staticObject = staticObject;
+		this.collisionObjType = collisionObjType;
 	}
 	
-	public Collider(boolean staticObject, boolean isTrigger) {
-		this(staticObject);
+	public Collider(boolean staticObject, boolean isTrigger, short collisionObjType) {
+		this(staticObject, collisionObjType);
 		this.isTrigger = isTrigger;
 	}
 	
@@ -86,7 +88,7 @@ public class Collider extends Component {
 					} else {
 						objMoved = obj1;
 					}
-					if (!objMoved.isTrigger) {
+					if (!obj1.isTrigger && !obj2.isTrigger) {
 						objMoved.getGameObject().transform.setPosition(objMoved.getGameObject().transform.getPosition().add(movement));
 					}
 					obj1.objectCollided(obj2);
@@ -122,7 +124,8 @@ public class Collider extends Component {
 			Collider obj1 = dynColliders[i];
 			for (int j=0; j < obj1.dynCollisionObjs.size(); j++) {
 				Transform obj1Trans = obj1.getGameObject().transform;
-				Transform obj2Trans = obj1.dynCollisionObjs.get(j).getGameObject().transform;
+				Collider obj2 = obj1.dynCollisionObjs.get(j);
+				Transform obj2Trans = obj2.getGameObject().transform;
 				if (checkIfTransformsCollide(obj1Trans, obj2Trans)) {
 					Vector3f posDiff = obj1Trans.getPosition().sub(obj2Trans.getPosition());
 					Vector2f movementTemp = obj1Trans.getScale().mul(0.5f).add(obj2Trans.getScale().mul(0.5f));
@@ -139,7 +142,9 @@ public class Collider extends Component {
 						objMoved = obj1Trans;
 						movement.mul(-1);
 					}
-					objMoved.setPosition(objMoved.getPosition().add(movement));
+					if (!obj1.isTrigger && !obj2.isTrigger) {
+						objMoved.setPosition(objMoved.getPosition().add(movement));
+					}
 				}
 			}
 		}
