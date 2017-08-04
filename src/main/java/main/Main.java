@@ -151,7 +151,7 @@ public class Main {
 			map.renderMap(mvp);
 		    glfwSwapBuffers(window);
 		    glfwPollEvents();
-//		    while (glfwGetTime() - startTime < 1/60.0f){}
+//		    while (glfwGetTime() - startTime < 1/30.0f){}
 		    if (glfwGetTime() - lastfCountTime >= 3) {
 		    	System.out.println(frames/(glfwGetTime() - lastfCountTime));
 		    	lastfCountTime = glfwGetTime();

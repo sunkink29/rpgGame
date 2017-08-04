@@ -18,12 +18,12 @@ public class Player extends GameObject implements Damageable {
 	
 	public static Player currentPlayer;
 	GameObject sword;
-	Vector2f swordOffset = new Vector2f(0.2f, -0.1f);
+	Vector2f swordOffset = new Vector2f(0.4f, -0.2f);
 	Vector2f currentSwordOffset = new Vector2f(swordOffset);
 	float attackduration = 0.5f;
 	boolean isAttacking = false;
 	double attackStartTime = 0;
-	Vector2f attackOffset = new Vector2f(swordOffset.x, swordOffset.y - 1f);
+	Vector2f attackOffset = new Vector2f(swordOffset.x, swordOffset.y + 1/transform.getScale().y);
 	int attackState = 1;
 	float speed = 5.0f; // 3 units / second
 	public Vector3f movementDirection = new Vector3f();
@@ -39,14 +39,14 @@ public class Player extends GameObject implements Damageable {
 		renderer.setShaderProperties(shaderProperties);
 		addComponent(new Collider(false, CollisionObjs.PLAYER));
 		
-		sword = new Sword(new Transform(position, -0.1f, new Vector2f(0.2f, 0.4f), rotation), (CollisionObjs.ENEMY | CollisionObjs.DESTRUCTIBLEOBEJECT));
+		sword = new Sword(new Transform(position, -0.1f, new Vector2f(0.4f, 0.8f), rotation), (CollisionObjs.ENEMY | CollisionObjs.DESTRUCTIBLEOBEJECT));
+		addChildObject(sword);
 		sword.renderer.setColor(new Vector3f(0.88f, 0.46f, 0.46f));
 		currentPlayer = this;
 	}
 	
 	public void renderPlayer(Matrix4f viewMatrix){
 		super.renderObject(viewMatrix);
-		sword.renderObject(viewMatrix);
 	}
 		
 	public void updatePlayer(long window , Map map) {
@@ -55,7 +55,6 @@ public class Player extends GameObject implements Damageable {
 			damaged = false;
 		}
 		super.update(map);
-		sword.update(map);
 		Vector3f direction = new Vector3f(0, 0, 1);
 		Vector3f right = new Vector3f(-1, 0, 0);
 		Vector3f dest = new Vector3f();
@@ -115,12 +114,7 @@ public class Player extends GameObject implements Damageable {
 		}
 		
 		attackAnimation();
-		float swordOffsetAngle = (float) Math.atan2(currentSwordOffset.y, currentSwordOffset.x);
-		float swordOffsetRadius = (float) Math.sqrt(Math.pow(currentSwordOffset.x, 2) + Math.pow(currentSwordOffset.y, 2));
-		swordTranslation = new Vector2f((float)Math.cos(rotation + swordOffsetAngle) * -swordOffsetRadius, (float)Math.sin(rotation + swordOffsetAngle) * -swordOffsetRadius);
-		
-		sword.transform.setPosition(playerPos.add(swordTranslation));
-		sword.transform.setRotation((float) rotation);
+		sword.transform.setPosition(currentSwordOffset);
 		
 		isHit = false;
 	}
@@ -136,9 +130,6 @@ public class Player extends GameObject implements Damageable {
 	}
 	
 	public void objectCollided(Collider otherObject) {
-		if (!otherObject.isTrigger) {
-			sword.transform.setPosition(transform.getPosition().add(swordTranslation));
-		}
 		if (otherObject.getGameObject() instanceof Sword) {
 			Sword sword = (Sword) otherObject.getGameObject();
 			if ((sword.damageObjects & CollisionObjs.PLAYER) != 0) {

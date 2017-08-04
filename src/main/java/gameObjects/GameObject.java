@@ -18,7 +18,8 @@ public class GameObject {
 	public Transform transform;
 	public Renderer renderer;
 	public ArrayList<Component> components = new ArrayList<Component>();
-	public GameObject[] childObjects;
+	public GameObject parentObject;
+	public ArrayList<GameObject> childObjects = new ArrayList<GameObject>();
 	
 	public GameObject(Vector2f position, float layer, Vector2f scale, float rotation) {
 		this(new Transform(position, layer, scale, rotation));
@@ -32,6 +33,11 @@ public class GameObject {
 		this(transform);
 		renderer = (Renderer) addComponent(new Renderer());
 		renderer.setVaoAndProgramId(shape);
+	}
+	
+	public void addChildObject(GameObject childObject) {
+		childObject.parentObject = this;
+		childObjects.add(childObject);
 	}
 
 	public Component addComponent(Component newComponent) {
@@ -55,10 +61,16 @@ public class GameObject {
 		for(Component component: components) {
 			component.update(map);
 		}
+		for (GameObject obj: childObjects) {
+			obj.update(map);
+		}
 	}
 	public void renderObject(Matrix4f viewMatrix) {
 		if (renderer != null) {
 			renderer.render(viewMatrix);
+		}
+		for (GameObject obj: childObjects) {
+			obj.renderObject(viewMatrix);
 		}
 	}
 	

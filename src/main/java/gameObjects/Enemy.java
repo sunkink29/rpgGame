@@ -30,12 +30,12 @@ public class Enemy extends GameObject implements Damageable {
 	float detectionDistance;
 	boolean followingPlayer = false;
 	GameObject sword;
-	Vector2f swordOffset = new Vector2f(0.2f, -0.1f);
+	Vector2f swordOffset = new Vector2f(0.4f, -0.2f);
 	Vector2f currentSwordOffset = new Vector2f(swordOffset);
 	float attackduration = 0.5f;
 	boolean isAttacking = false;
 	double attackStartTime = 0;
-	Vector2f attackOffset = new Vector2f(swordOffset.x, swordOffset.y - 1f);
+	Vector2f attackOffset = new Vector2f(swordOffset.x, swordOffset.y + 1/transform.getScale().y);
 	int attackState = 1;
 
 	
@@ -68,21 +68,20 @@ public class Enemy extends GameObject implements Damageable {
 	
 	@Override
 	public void init() {
-		sword = new Sword(new Transform(transform.getPosition(), -0.1f, new Vector2f(0.2f, 0.4f), 0), (CollisionObjs.PLAYER | CollisionObjs.DESTRUCTIBLEOBEJECT));
+		sword = new Sword(new Transform(transform.getPosition(), -0.1f, new Vector2f(0.4f, 0.8f), 0), (CollisionObjs.PLAYER | CollisionObjs.DESTRUCTIBLEOBEJECT));
+		addChildObject(sword);
 		sword.renderer.setColor( new Vector3f(0.88f, 0.46f, 0.46f));
 	}
 	//transform.getPosition(), new Vector3f(0.88f, 0.46f, 0.46f), new Vector2f(0.2f, 0.4f)
 	
 	@Override
 	public void renderObject(Matrix4f viewMatrix) {
-		sword.renderObject(viewMatrix);
 		super.renderObject(viewMatrix);
 	}
 	
 	@Override
 	public void update(Map map) {
 		super.update(map);
-		sword.update(map);
 
 		if (!isHit && damaged) {
 			renderer.setColor(new Vector3f(normalColor));
@@ -139,12 +138,12 @@ public class Enemy extends GameObject implements Damageable {
 			
 			// calculate sword position
 			attackAnimation();
-			Vector2f swordPosition = newPos;
-			float swordOffsetAngle = (float) Math.atan2(currentSwordOffset.y, currentSwordOffset.x);
-			float swordOffsetRadius = (float) Math.sqrt(Math.pow(currentSwordOffset.x, 2) + Math.pow(currentSwordOffset.y, 2));
-			swordPosition.add((float)Math.cos(transform.getRotation() + swordOffsetAngle) * -swordOffsetRadius, (float)Math.sin(transform.getRotation() + swordOffsetAngle) * -swordOffsetRadius);
-			sword.transform.setPosition(swordPosition);
-			sword.transform.setRotation(transform.getRotation());
+//			Vector2f swordPosition = newPos;
+//			float swordOffsetAngle = (float) Math.atan2(currentSwordOffset.y, currentSwordOffset.x);
+//			float swordOffsetRadius = (float) Math.sqrt(Math.pow(currentSwordOffset.x, 2) + Math.pow(currentSwordOffset.y, 2));
+//			swordPosition.add((float)Math.cos(transform.getRotation() + swordOffsetAngle) * -swordOffsetRadius, (float)Math.sin(transform.getRotation() + swordOffsetAngle) * -swordOffsetRadius);
+			sword.transform.setPosition(currentSwordOffset);
+//			sword.transform.setRotation(transform.getRotation());
 
 			
 			// go to next wayPoint
