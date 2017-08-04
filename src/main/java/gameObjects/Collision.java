@@ -10,12 +10,12 @@ public class Collision {
 	
 	public static Vector3f isPlayerColliding(Map map, Player player) {
 		Vector3f collisionDirection = isGameObjectColliding(map, player);
-		Vector3f position = player.transform.getPosition();
+		Vector2f position = player.transform.getPosition();
 		Vector2f size = player.transform.getScale();
 		for(GameObject object: map.objects) {
 			if (object.getClass() == Enemy.class) {
 				Enemy enemy = (Enemy) object;
-				Vector3f enemyPosition = enemy.sword.transform.getPosition();
+				Vector2f enemyPosition = enemy.sword.transform.getPosition();
 				Vector2f enemyScale = enemy.sword.transform.getScale();
 				if (position.x - size.x/2 < enemyPosition.x + enemyScale.x/2 &&
 						position.x + size.x/2 > enemyPosition.x - enemyScale.x/2 &&
@@ -33,12 +33,12 @@ public class Collision {
 	}
 	
 	public static Vector3f isEnemyColliding(Map map, Enemy enemy) {
-		Vector3f position = enemy.transform.getPosition();
+		Vector2f position = enemy.transform.getPosition();
 		Vector2f size = enemy.transform.getScale();
 		Vector3f collisionDirection = isGameObjectColliding(map, enemy);
 
 		GameObject sword = Player.currentPlayer.sword;
-		Vector3f swordPosition = sword.transform.getPosition();
+		Vector2f swordPosition = sword.transform.getPosition();
 		Vector2f swordScale = sword.transform.getScale();
 		if (position.x - size.x/2 < swordPosition.x + swordScale.x/2 &&
 					position.x + size.x/2 > swordPosition.x - swordScale.x/2 &&
@@ -49,13 +49,13 @@ public class Collision {
 		return collisionDirection;
 	}
 	
-	public static Vector3f isObjectColliding(Map map, Vector3f position, Vector2f size) {
+	public static Vector3f isObjectColliding(Map map, Vector2f position, Vector2f size) {
 		ArrayList<Room> rooms = map.rooms;
 		Vector3f collisionDirection = new Vector3f();
 		boolean inHallway = false;
 		for (int i = 0; i < rooms.size(); i++) {
 			Room room = rooms.get(i);
-			Vector3f roomPosition = room.transform.getPosition();
+			Vector2f roomPosition = room.transform.getPosition();
 			Vector2f roomWallScale = room.wall.transform.getScale();
 			Vector2f roomFloorScale = room.floor.transform.getScale();
 			if (position.x - size.x < roomPosition.x + roomWallScale.x/2 &&

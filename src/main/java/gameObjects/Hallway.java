@@ -7,19 +7,17 @@ public class Hallway extends Room {
 	
 	public Vector2f direction;
 
-	public Hallway(Vector3f position, Vector2f size, Vector2f direction) {
+	public Hallway(Vector2f position, Vector2f size, Vector2f direction) {
 		super(position, size);
 		this.direction = direction;
 	}
-	public Hallway(Vector3f position, float length, float width) {
+	public Hallway(Vector2f position, float length, float width) {
 		super(position, length, width);
 	}
 	
 	@Override
 	public void init() {
-		Vector3f newPos = transform.getPosition();
-		newPos.z = -0.2f;
-		transform.setPosition(newPos);
+		transform.setLayer(0.5f);
 		super.init();
 		Vector2f scale = new Vector2f(4, 4).mul(direction);
 		Vector2f floorScale = floor.transform.getScale();

@@ -5,14 +5,13 @@ import org.joml.*;
 import components.Collider;
 import components.Transform;
 import defaultShapes.Shape;
-import defaultShapes.Square;
 import main.Controls;
 
 public class Projectile extends GameObject {
 	public float speed = 3;
 	public Map map;
 	int startCollision = 2;
-	Vector3f targetDirection = new Vector3f(0, 1, 0);
+	Vector2f targetDirection = new Vector2f(0, 1);
 	
 	public Projectile(Transform transform) {
 		super(transform);
@@ -23,7 +22,7 @@ public class Projectile extends GameObject {
 		addComponent(new Collider(false, true, CollisionObjs.PROJECTILE));
 	}
 	
-	public Projectile(Transform transform, Shape shape, Vector3f targetDirection) {
+	public Projectile(Transform transform, Shape shape, Vector2f targetDirection) {
 		this(transform, shape);
 		this.targetDirection = targetDirection;
 	}
@@ -35,8 +34,8 @@ public class Projectile extends GameObject {
 	@Override
 	public void update(Map map) {
 		super.update(map);
-		Vector3f targetDirection = new Vector3f(this.targetDirection);
-		Vector3f newPos = transform.getPosition().add(targetDirection.mul(Controls.deltaTime).mul(speed));
+		Vector2f targetDirection = new Vector2f(this.targetDirection);
+		Vector2f newPos = transform.getPosition().add(targetDirection.mul(Controls.deltaTime).mul(speed));
 		transform.setPosition(newPos);
 		this.map = map;
 		if (startCollision > 0) {

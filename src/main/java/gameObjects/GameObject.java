@@ -20,8 +20,8 @@ public class GameObject {
 	public ArrayList<Component> components = new ArrayList<Component>();
 	public GameObject[] childObjects;
 	
-	public GameObject(Vector3f position, Vector2f scale, float rotation) {
-		this(new Transform(position, scale, rotation));
+	public GameObject(Vector2f position, float layer, Vector2f scale, float rotation) {
+		this(new Transform(position, layer, scale, rotation));
 	}
 	
 	public GameObject(Transform transform) {

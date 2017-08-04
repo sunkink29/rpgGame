@@ -3,7 +3,6 @@ package gameObjects;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import rendering.Model;
 import static org.lwjgl.glfw.GLFW.*;
 
 import components.Collider;
@@ -12,15 +11,15 @@ import components.Transform;
 public class ProjectileLauncher extends GameObject {
 	
 	double lastShot;
-	Vector3f targetDirection = new Vector3f(0,1,0);
+	Vector2f targetDirection = new Vector2f(0,1);
 	
-	public ProjectileLauncher(Vector3f position, Vector3f color) {
-		super(new Transform(position,new Vector2f(0.5f),0), defaultShapes.Square.getInstance());
+	public ProjectileLauncher(Vector2f position, Vector3f color) {
+		super(new Transform(position, -0.1f,new Vector2f(0.5f),0), defaultShapes.Square.getInstance());
 		addComponent(new Collider(true, CollisionObjs.STATICOBJECT));
 		renderer.setColor(color);
 	}
 	
-	public ProjectileLauncher(Vector3f position, Vector3f color, Vector3f targetDirection) {
+	public ProjectileLauncher(Vector2f position, Vector3f color, Vector2f targetDirection) {
 		this(position,color);
 		this.targetDirection = targetDirection;
 	}
@@ -36,7 +35,7 @@ public class ProjectileLauncher extends GameObject {
 		super.update(map);
 		if (glfwGetTime() - lastShot > 2) {
 			lastShot = glfwGetTime();
-			Projectile projectile = new Projectile(new Transform(transform.getPosition().add(0, 0f, 0), new Vector2f(0.25f), 0), defaultShapes.Square.getInstance(), targetDirection);
+			Projectile projectile = new Projectile(new Transform(transform.getPosition().add(0, 0f), 0, new Vector2f(0.25f), 0), defaultShapes.Square.getInstance(), targetDirection);
 			map.addObject(projectile);
 		}
 	}

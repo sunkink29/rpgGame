@@ -52,10 +52,10 @@ public class Collider extends Component {
 				if (obj2.getGameObject().getClass() == Room.class || obj2.getGameObject().getClass() == Hallway.class) {
 					Room room = (Room)obj2.getGameObject();
 					if(checkIfTransformsCollide(obj1.getGameObject().transform, room.wall.transform)) {
-						Vector3f posDiff = obj1Trans.getPosition().sub(obj2.getGameObject().transform.getPosition());
+						Vector2f posDiff = obj1Trans.getPosition().sub(obj2.getGameObject().transform.getPosition());
 						Vector2f obj1Scale = obj1Trans.getScale().mul(0.5f);
-						Vector3f movementTemp = new Vector3f(obj1Scale.x, obj1Scale.x,0).add(Math.abs(posDiff.x), Math.abs(posDiff.y), 0);
-						Vector2f movement = new Vector2f(movementTemp.x, movementTemp.y).sub(room.floor.transform.getScale().mul(0.5f));
+						Vector2f movementTemp = obj1Scale.add(Math.abs(posDiff.x), Math.abs(posDiff.y));
+						Vector2f movement = movementTemp.sub(room.floor.transform.getScale().mul(0.5f));
 						if (movement.x>0 || movement.y>0) { // if obj1 is not completely within the boundary of obj2 floor
 							collisions.add(obj2);
 						}
@@ -68,14 +68,14 @@ public class Collider extends Component {
 					}
 				} else if (checkIfTransformsCollide(obj1.getGameObject().transform, obj2.getGameObject().transform)) {
 					Transform obj2Trans = obj2.getGameObject().transform;
-					Vector3f posDiff = obj1Trans.getPosition().sub(obj2Trans.getPosition());
+					Vector2f posDiff = obj1Trans.getPosition().sub(obj2Trans.getPosition());
 					Vector2f movementTemp = obj1Trans.getScale().mul(0.5f).add(obj2Trans.getScale().mul(0.5f));
-					Vector3f movement = new Vector3f(movementTemp.x, movementTemp.y, 0).sub(Math.abs(posDiff.x),Math.abs(posDiff.y), 0);
+					Vector2f movement = movementTemp.sub(Math.abs(posDiff.x),Math.abs(posDiff.y));
 					Collider objMoved = null;
 					if (Math.abs(posDiff.x) > Math.abs(posDiff.y)) {
-						movement.mul(Math.copySign(1, posDiff.x), 0, 0);
+						movement.mul(Math.copySign(1, posDiff.x), 0);
 					} else {
-						movement.mul(0, Math.copySign(1, posDiff.y), 0);
+						movement.mul(0, Math.copySign(1, posDiff.y));
 					}
 					if (!obj2.staticObject) {
 						if (obj1Trans.getScale().length() > obj2Trans.getScale().length()) {
@@ -99,17 +99,17 @@ public class Collider extends Component {
 				Collider obj2 = collisions.get(j);
 				Room room = (Room) obj2.getGameObject();
 				Transform obj2Trans = obj2.getGameObject().transform;
-				Vector3f posDiff = obj1Trans.getPosition().sub(obj2Trans.getPosition());
+				Vector2f posDiff = obj1Trans.getPosition().sub(obj2Trans.getPosition());
 				Vector2f obj1Scale = obj1Trans.getScale().mul(0.5f);
-				Vector3f movementTemp = new Vector3f(obj1Scale.x, obj1Scale.y,0).add(Math.abs(posDiff.x), Math.abs(posDiff.y), 0);
-				Vector2f movement = new Vector2f(movementTemp.x, movementTemp.y).sub(room.floor.transform.getScale().mul(0.5f));
+				Vector2f movementTemp = obj1Scale.add(Math.abs(posDiff.x), Math.abs(posDiff.y));
+				Vector2f movement = movementTemp.sub(room.floor.transform.getScale().mul(0.5f));
 				if (movement.x < 0) {
 					movement.x = 0;
 				} else if (movement.y < 0) {
 					movement.y = 0;
 				}
 				movement.mul(obj1.ignoreDirection);
-				Vector3f newMovement = new Vector3f(Math.copySign(movement.x, posDiff.x), Math.copySign(movement.y, posDiff.y), 0);
+				Vector2f newMovement = movement.set(Math.copySign(movement.x, posDiff.x), Math.copySign(movement.y, posDiff.y));
 				if (!obj1.isTrigger) {
 					obj1Trans.setPosition(obj1Trans.getPosition().sub(newMovement));
 				}
@@ -127,13 +127,13 @@ public class Collider extends Component {
 				Collider obj2 = obj1.dynCollisionObjs.get(j);
 				Transform obj2Trans = obj2.getGameObject().transform;
 				if (checkIfTransformsCollide(obj1Trans, obj2Trans)) {
-					Vector3f posDiff = obj1Trans.getPosition().sub(obj2Trans.getPosition());
+					Vector2f posDiff = obj1Trans.getPosition().sub(obj2Trans.getPosition());
 					Vector2f movementTemp = obj1Trans.getScale().mul(0.5f).add(obj2Trans.getScale().mul(0.5f));
-					Vector3f movement = new Vector3f(movementTemp.x, movementTemp.y, 0).sub(Math.abs(posDiff.x),Math.abs(posDiff.y), 0);
+					Vector2f movement = movementTemp.sub(Math.abs(posDiff.x),Math.abs(posDiff.y));
 					if (Math.abs(posDiff.x) > Math.abs(posDiff.y)) {
-						movement.mul(1, 0, 0);
+						movement.mul(1, 0);
 					} else {
-						movement.mul(0, 1, 0);
+						movement.mul(0, 1);
 					}
 					Transform objMoved = new Transform();
 					if (obj1.pushedByWall) {
@@ -151,9 +151,9 @@ public class Collider extends Component {
 	}
 	
 	public static boolean checkIfTransformsCollide(Transform object1, Transform object2) {
-		Vector3f posDiff = object1.getPosition().sub(object2.getPosition());
+		Vector2f posDiff = object1.getPosition().sub(object2.getPosition());
 		Vector2f movementTemp = object1.getScale().mul(0.5f).add(object2.getScale().mul(0.5f));
-		Vector3f movement = new Vector3f(movementTemp.x, movementTemp.y, 0).sub(Math.abs(posDiff.x),Math.abs(posDiff.y), 0);
+		Vector2f movement = movementTemp.sub(Math.abs(posDiff.x),Math.abs(posDiff.y));
 		return movement.x > 0 && movement.y > 0;
 	}
 	

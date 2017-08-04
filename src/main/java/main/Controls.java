@@ -88,14 +88,14 @@ public class Controls {
 		}
 		
 		
-		
+		Vector2f playerPos = Player.currentPlayer.transform.getPosition();
 		dest = new Vector3f();
 		Vector3f cPDistance = new Vector3f();
-		if (Math.abs(Player.currentPlayer.getPlayerPosition().x - cameraPosition.x) > zoom/2 * scrollDistance) {
-			cPDistance.x = Player.currentPlayer.getPlayerPosition().x - cameraPosition.x;
+		if (Math.abs(playerPos.x - cameraPosition.x) > zoom/2 * scrollDistance) {
+			cPDistance.x = playerPos.x - cameraPosition.x;
 		}
-		if (Math.abs(Player.currentPlayer.getPlayerPosition().y - cameraPosition.y) > zoom/2 * scrollDistance) {
-			cPDistance.y =  Player.currentPlayer.getPlayerPosition().y  - cameraPosition.y;
+		if (Math.abs(playerPos.y - cameraPosition.y) > zoom/2 * scrollDistance) {
+			cPDistance.y = playerPos.y  - cameraPosition.y;
 		}
 		cPDistance.z = 0;
 		dest = new Vector3f();
@@ -108,7 +108,7 @@ public class Controls {
 			dest.y = 1;
 		}
 		Vector3f dest2 = new Vector3f(zoom/2 * scrollDistance).mul(dest);
-		Vector3f distance = new Vector3f(Player.currentPlayer.getPlayerPosition().sub(cameraPosition));
+		Vector3f distance = new Vector3f(playerPos, 0).sub(cameraPosition);
 		distance.x = Math.abs(distance.x);
 		distance.y = Math.abs(distance.y);
 		cPDistance.mul(distance.sub(dest2));

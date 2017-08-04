@@ -25,21 +25,21 @@ public class Player extends GameObject implements Damageable {
 	double attackStartTime = 0;
 	Vector2f attackOffset = new Vector2f(swordOffset.x, swordOffset.y - 1f);
 	int attackState = 1;
-	private Vector3f playerPosition = new Vector3f(0,0,-1f);
 	float speed = 5.0f; // 3 units / second
 	public Vector3f movementDirection = new Vector3f();
 	float health = 10;
 	boolean damaged = false;
 	boolean isHit = false;
 	USP[] shaderProperties;
+	Vector2f swordTranslation;
 
-	public Player() {
-		super(new Transform(new Vector3f(0, 0, -1), new Vector2f(0.5f),0), defaultShapes.Triangle.getInstance());
+	public Player(Vector2f position, float rotation) {
+		super(new Transform(position, 0, new Vector2f(0.5f), rotation), defaultShapes.Triangle.getInstance());
 		shaderProperties = new USP[] {new USP("shaderPosition", new Vector2f(0, 0))};
 		renderer.setShaderProperties(shaderProperties);
 		addComponent(new Collider(false, CollisionObjs.PLAYER));
 		
-		sword = new Sword(new Transform(playerPosition, new Vector2f(0.2f, 0.4f), 0), (CollisionObjs.ENEMY | CollisionObjs.DESTRUCTIBLEOBEJECT));
+		sword = new Sword(new Transform(position, -0.1f, new Vector2f(0.2f, 0.4f), rotation), (CollisionObjs.ENEMY | CollisionObjs.DESTRUCTIBLEOBEJECT));
 		sword.renderer.setColor(new Vector3f(0.88f, 0.46f, 0.46f));
 		currentPlayer = this;
 	}
@@ -54,7 +54,6 @@ public class Player extends GameObject implements Damageable {
 			renderer.setColor(new Vector3f(0));
 			damaged = false;
 		}
-		playerPosition = transform.getPosition();
 		super.update(map);
 		sword.update(map);
 		Vector3f direction = new Vector3f(0, 0, 1);
@@ -85,7 +84,7 @@ public class Player extends GameObject implements Damageable {
 				startAttackAnimation();
 			}
 		}
-		
+		Vector2f playerPos = transform.getPosition();
 		DoubleBuffer xpos = BufferUtils.createDoubleBuffer(1), ypos = BufferUtils.createDoubleBuffer(1); // create buffers for cursor position
 		glfwGetCursorPos(window, xpos, ypos); // get cursor position
 		Vector2f cursorPos = new Vector2f((float)xpos.get(0), (float)ypos.get(0)); // put the cursor position into a vector object
@@ -98,7 +97,7 @@ public class Player extends GameObject implements Damageable {
 		cursorPos.y /= windowSize.y;
 		cursorPos.mul((Controls.zoom*((float)width.get(0)/height.get(0)))*0.5f, Controls.zoom*0.5f) // scale the cursor into world coordinates  
 		.add(-Controls.cameraPosition.x, Controls.cameraPosition.y) // transform the cursor position to be relative to the world orgin
-		.add(getPlayerPosition().x, -getPlayerPosition().y); // transform the cursor position to be relative to the player orgin
+		.add(playerPos.x, -playerPos.y); // transform the cursor position to be relative to the player orgin
 		double rotation = Math.atan2(cursorPos.x, cursorPos.y); // get an angle from the x and y coordinates
 		
 		if (movementDirection.x != 0){
@@ -107,31 +106,23 @@ public class Player extends GameObject implements Damageable {
 		if (movementDirection.y != 0){
 			movementDirection.y /= movementDirection.y * movementDirection.y<0?-1:1;
 		}
-		setPlayerPosition(getPlayerPosition().add(movementDirection.mul(Controls.deltaTime,dest).mul(speed)));
-		
-		attackAnimation();
-		Vector3f swordPosition = getPlayerPosition();
-		float swordOffsetAngle = (float) Math.atan2(currentSwordOffset.y, currentSwordOffset.x);
-		float swordOffsetRadius = (float) Math.sqrt(Math.pow(currentSwordOffset.x, 2) + Math.pow(currentSwordOffset.y, 2));
-		swordPosition.add((float)Math.cos(rotation + swordOffsetAngle) * -swordOffsetRadius, (float)Math.sin(rotation + swordOffsetAngle) * -swordOffsetRadius,0);
-		
-		transform.setPosition(getPlayerPosition());
+		Vector3f movement = movementDirection.mul(Controls.deltaTime,dest).mul(speed);
+		transform.setPosition(playerPos.add(movement.x, movement.y));
 		transform.setRotation((float) rotation);
-		sword.transform.setPosition(swordPosition);
-		sword.transform.setRotation((float) rotation);
 		
 		if (glfwGetKey(window, GLFW_KEY_F ) == GLFW_PRESS){
-			System.out.println(playerPosition);
+			System.out.println(playerPos);
 		}
+		
+		attackAnimation();
+		float swordOffsetAngle = (float) Math.atan2(currentSwordOffset.y, currentSwordOffset.x);
+		float swordOffsetRadius = (float) Math.sqrt(Math.pow(currentSwordOffset.x, 2) + Math.pow(currentSwordOffset.y, 2));
+		swordTranslation = new Vector2f((float)Math.cos(rotation + swordOffsetAngle) * -swordOffsetRadius, (float)Math.sin(rotation + swordOffsetAngle) * -swordOffsetRadius);
+		
+		sword.transform.setPosition(playerPos.add(swordTranslation));
+		sword.transform.setRotation((float) rotation);
+		
 		isHit = false;
-	}
-
-	public Vector3f getPlayerPosition() {
-		return new Vector3f(playerPosition);
-	}
-
-	public void setPlayerPosition(Vector3f playerPosition) {
-		this.playerPosition = playerPosition;
 	}
 	
 	public void damageObject(int damage) {
@@ -145,6 +136,9 @@ public class Player extends GameObject implements Damageable {
 	}
 	
 	public void objectCollided(Collider otherObject) {
+		if (!otherObject.isTrigger) {
+			sword.transform.setPosition(transform.getPosition().add(swordTranslation));
+		}
 		if (otherObject.getGameObject() instanceof Sword) {
 			Sword sword = (Sword) otherObject.getGameObject();
 			if ((sword.damageObjects & CollisionObjs.PLAYER) != 0) {

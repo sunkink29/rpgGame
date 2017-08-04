@@ -1,8 +1,5 @@
 package gameObjects;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -16,21 +13,21 @@ public class Room extends GameObject {
 	public GameObject floor;
 	public GameObject wall;
 
-	public Room(Vector3f position, float length, float width) {
+	public Room(Vector2f position, float length, float width) {
 		this(position, new Vector2f(length, width));
 	}
 	
-	public Room(Vector3f position, Vector2f size){
-		super(new Transform(position, new Vector2f(1), 0));
+	public Room(Vector2f position, Vector2f size){
+		super(new Transform(position, 1, new Vector2f(1), 0));
 		this.size = new Vector2f(size);
-		position.z = 1;
 	}
 	
 	public void init() {
-		wall = new GameObject(new Transform(transform.getPosition(), size, 0), defaultShapes.Square.getInstance());
-		Vector3f floorPos = transform.getPosition();
-		floorPos.z += -0.1f;
-		floor = new GameObject(new Transform(floorPos, new Vector2f(size).sub(1,1), 0), defaultShapes.Square.getInstance());
+		Vector2f position = transform.getPosition();
+		float layer = transform.getLayer();
+		wall = new GameObject(new Transform(position, layer, size, 0), defaultShapes.Square.getInstance());
+		layer += -0.1f;
+		floor = new GameObject(new Transform(position, layer, new Vector2f(size).sub(1,1), 0), defaultShapes.Square.getInstance());
 		floor.renderer.setColor(new Vector3f(0.8f));
 		addComponent(new Collider(true, CollisionObjs.WALL));
 	};

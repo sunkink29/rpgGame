@@ -111,17 +111,17 @@ public class Main {
 		};
 		
 		Map map = new Map();
-		map.addRoom(new Room(new Vector3f(), new Vector2f(10)));
-		map.addRoom(new Room(new Vector3f(12, 0, 0), new Vector2f(10)));
-		map.addRoom(new Room(new Vector3f(-12, 12, 0), new Vector2f(10, 10)));
-		map.addRoom(new Room(new Vector3f(6, 12, 0), new Vector2f(22, 10)));
-		map.addRoom(new Hallway(new Vector3f(6, 0, 0), new Vector2f(3, 3), new Vector2f(1, 0)));
-		map.addRoom(new Hallway(new Vector3f(0, 6, 0), new Vector2f(3, 3), new Vector2f(0, 1)));
-		map.addRoom(new Hallway(new Vector3f(12, 6, 0), new Vector2f(3, 3), new Vector2f(0, 1)));
-		map.addRoom(new Hallway(new Vector3f(-6, 12, 0), new Vector2f(3, 3), new Vector2f(1, 0)));
-		map.addRoom(new Hallway(new Vector3f(-21, 12, 0), new Vector2f(9, 3), new Vector2f(1, 0)));
-		map.addRoom(new Hallway(new Vector3f(-21, 15, 0), new Vector2f(3, 3), new Vector2f(0, 1)));
-		map.addObject(new Enemy(new Vector3f(12, 0, 0), new Vector2f(0.5f),5, enemyPath, 3));
+		map.addRoom(new Room(new Vector2f(), new Vector2f(10)));
+		map.addRoom(new Room(new Vector2f(12, 0), new Vector2f(10)));
+		map.addRoom(new Room(new Vector2f(-12, 12), new Vector2f(10, 10)));
+		map.addRoom(new Room(new Vector2f(6, 12), new Vector2f(22, 10)));
+		map.addRoom(new Hallway(new Vector2f(6, 0), new Vector2f(3, 3), new Vector2f(1, 0)));
+		map.addRoom(new Hallway(new Vector2f(0, 6), new Vector2f(3, 3), new Vector2f(0, 1)));
+		map.addRoom(new Hallway(new Vector2f(12, 6), new Vector2f(3, 3), new Vector2f(0, 1)));
+		map.addRoom(new Hallway(new Vector2f(-6, 12), new Vector2f(3, 3), new Vector2f(1, 0)));
+		map.addRoom(new Hallway(new Vector2f(-21, 12), new Vector2f(9, 3), new Vector2f(1, 0)));
+		map.addRoom(new Hallway(new Vector2f(-21, 15), new Vector2f(3, 3), new Vector2f(0, 1)));
+		map.addObject(new Enemy(new Vector2f(12, 0), new Vector2f(0.5f),5, enemyPath, 3));
 //		map.addObject(new Enemy(new Vector3f(12, 12, 0), new Vector2f(0.5f),5, enemyPath, 2));
 //		map.addObject(new Enemy(new Vector3f(0, 12, 0), new Vector2f(0.5f),5, enemyPath, 1));
 //		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector2f(0.5f),5, enemyPath, 0));
@@ -129,7 +129,7 @@ public class Main {
 //		map.addObject(new ProjectileLauncher(new Vector3f(0f, 0, -1), new Vector3f(1)));
 //		map.addObject(new ProjectileLauncher(new Vector3f(-12, 12, -1), new Vector3f(1), new Vector3f(1,0,0)));
 		
-		Player player = new Player();
+		Player player = new Player(new Vector2f(), 0);
 		
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
@@ -160,9 +160,6 @@ public class Main {
 		} // Check if the ESC key was pressed or the window was closed
 		while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
 		!glfwWindowShouldClose(window));
-		
-		glDeleteBuffers(1);
-		glDeleteVertexArrays(1);
 		
 		glfwTerminate();
 	}

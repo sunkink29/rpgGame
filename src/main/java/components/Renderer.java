@@ -31,7 +31,7 @@ public class Renderer extends Component {
 	private USP[] shaderProperties;
 	
 	public Vector3f getColor() {return new Vector3f(color);}
-	public void setColor(Vector3f newColor) {if (!newColor.equals(color)) color = new Vector3f(newColor);}
+	public void setColor(Vector3f newColor) {if (!newColor.equals(color)) color.set(newColor);}
 	
 	public int getVao() {return vao;}
 	public void setVao(int newVao) {vao = newVao;}
@@ -72,9 +72,8 @@ public class Renderer extends Component {
 		glBindVertexArray(getVao());
 		FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(16);
 		FloatBuffer positionMatrix = BufferUtils.createFloatBuffer(16);
-		Matrix4f dest = new Matrix4f();
 		GameObject gameObject = getGameObject();
-		positionMatrix = new Matrix4f().translate(gameObject.transform.getPosition()).rotate(gameObject.transform.getRotation(), new Vector3f(0, 0, 1)).scale(new Vector3f(gameObject.transform.getScale(), 0)).get(positionMatrix);
+		positionMatrix = new Matrix4f().translate(new Vector3f(gameObject.transform.getPosition(),gameObject.transform.getLayer())).rotate(gameObject.transform.getRotation(), new Vector3f(0, 0, 1)).scale(new Vector3f(gameObject.transform.getScale(), 0)).get(positionMatrix);
 		floatBuffer =  viewMatrix.get(floatBuffer);
 		glUniformMatrix4fv(getMatrixId(), false, floatBuffer);
 		glUniformMatrix4fv(getWMatrixId(), false, positionMatrix);
