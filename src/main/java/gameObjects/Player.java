@@ -41,7 +41,7 @@ public class Player extends GameObject implements Damageable {
 		renderer.setShaderProperties(shaderProperties);
 		addComponent(new Collider(false, CollisionObjs.PLAYER));
 		
-		sword = new Sword(new Transform(position, -0.1f, new Vector2f(0.4f, 0.8f), rotation), (CollisionObjs.ENEMY | CollisionObjs.DESTRUCTIBLEOBEJECT));
+		sword = new Sword(new Transform(position, 0.1f, new Vector2f(0.4f, 0.8f), rotation), (CollisionObjs.ENEMY | CollisionObjs.DESTRUCTIBLEOBEJECT));
 		addChildObject(sword);
 		sword.renderer.setColor(new Vector3f(0.88f, 0.46f, 0.46f));
 		currentPlayer = this;
@@ -57,8 +57,8 @@ public class Player extends GameObject implements Damageable {
 			damaged = false;
 		}
 		super.update(map);
-		Vector3f direction = new Vector3f(0, 0, 1);
-		Vector3f right = new Vector3f(-1, 0, 0);
+		Vector3f direction = new Vector3f(0, 0, -1);
+		Vector3f right = new Vector3f(1, 0, 0);
 		Vector3f dest = new Vector3f();
 		Vector3f up = right.cross(direction, dest);
 		Vector3f movementDirection = new Vector3f(0);
@@ -82,10 +82,10 @@ public class Player extends GameObject implements Damageable {
 		
 		float rotation = transform.getRotation();
 		if (Input.getButtonDown("leftRot")) {
-			rotation -= rotationSpeed * Controls.deltaTime;
+			rotation += rotationSpeed * Controls.deltaTime;
 		}
 		if (Input.getButtonDown("rightRot")) {
-			rotation += rotationSpeed * Controls.deltaTime;
+			rotation -= rotationSpeed * Controls.deltaTime;
 		}
 		
 		if (Input.getButtonDown("attack")) {

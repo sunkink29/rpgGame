@@ -10,12 +10,9 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glDepthFunc;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import gameObjects.Enemy;
-import gameObjects.GameObject;
 import gameObjects.Hallway;
 import gameObjects.Map;
 import gameObjects.Player;
@@ -103,25 +100,25 @@ public class Main {
 		
 		Vector2f[] enemyPath = {
 				new Vector2f(0, 12),
-				new Vector2f(12, 12),
-				new Vector2f(12, 0),
-				new Vector2f(12, 12),
+				new Vector2f(-12, 12),
+				new Vector2f(-12, 0),
+				new Vector2f(-12, 12),
 				new Vector2f(0, 12),
 				new Vector2f(0, 0)
 		};
 		
 		Map map = new Map();
 		map.addRoom(new Room(new Vector2f(), new Vector2f(10)));
-		map.addRoom(new Room(new Vector2f(12, 0), new Vector2f(10)));
-		map.addRoom(new Room(new Vector2f(-12, 12), new Vector2f(10, 10)));
-		map.addRoom(new Room(new Vector2f(6, 12), new Vector2f(22, 10)));
-		map.addRoom(new Hallway(new Vector2f(6, 0), new Vector2f(3, 3), new Vector2f(1, 0)));
+		map.addRoom(new Room(new Vector2f(-12, 0), new Vector2f(10)));
+		map.addRoom(new Room(new Vector2f(12, 12), new Vector2f(10, 10)));
+		map.addRoom(new Room(new Vector2f(-6, 12), new Vector2f(22, 10)));
+		map.addRoom(new Hallway(new Vector2f(-6, 0), new Vector2f(3, 3), new Vector2f(1, 0)));
 		map.addRoom(new Hallway(new Vector2f(0, 6), new Vector2f(3, 3), new Vector2f(0, 1)));
-		map.addRoom(new Hallway(new Vector2f(12, 6), new Vector2f(3, 3), new Vector2f(0, 1)));
-		map.addRoom(new Hallway(new Vector2f(-6, 12), new Vector2f(3, 3), new Vector2f(1, 0)));
-		map.addRoom(new Hallway(new Vector2f(-21, 12), new Vector2f(9, 3), new Vector2f(1, 0)));
-		map.addRoom(new Hallway(new Vector2f(-21, 15), new Vector2f(3, 3), new Vector2f(0, 1)));
-		map.addObject(new Enemy(new Vector2f(12, 0), new Vector2f(0.5f),5, enemyPath, 3));
+		map.addRoom(new Hallway(new Vector2f(-12, 6), new Vector2f(3, 3), new Vector2f(0, 1)));
+		map.addRoom(new Hallway(new Vector2f(6, 12), new Vector2f(3, 3), new Vector2f(1, 0)));
+		map.addRoom(new Hallway(new Vector2f(21, 12), new Vector2f(9, 3), new Vector2f(1, 0)));
+		map.addRoom(new Hallway(new Vector2f(21, 15), new Vector2f(3, 3), new Vector2f(0, 1)));
+		map.addObject(new Enemy(new Vector2f(-12, 0), new Vector2f(0.5f),5, enemyPath, 3));
 //		map.addObject(new Enemy(new Vector3f(12, 12, 0), new Vector2f(0.5f),5, enemyPath, 2));
 //		map.addObject(new Enemy(new Vector3f(0, 12, 0), new Vector2f(0.5f),5, enemyPath, 1));
 //		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector2f(0.5f),5, enemyPath, 0));

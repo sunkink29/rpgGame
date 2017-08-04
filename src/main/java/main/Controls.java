@@ -36,7 +36,7 @@ public class Controls {
 		return ProjectionMatrix;
 	}
 	
-	public static Vector3f cameraPosition = new Vector3f(0, 0, -2f);
+	public static Vector3f cameraPosition = new Vector3f(0, 0, 2f);
 	// Initial Field of View
 	public static float zoom = 15f;
 
@@ -58,8 +58,8 @@ public class Controls {
 		double currentTime = glfwGetTime();
 		deltaTime = (float) ((float)currentTime - lastTime);
 		
-		Vector3f direction = new Vector3f(0, 0, 1);
-		Vector3f right = new Vector3f(-1, 0, 0);
+		Vector3f direction = new Vector3f(0, 0, -1);
+		Vector3f right = new Vector3f(1, 0, 0);
 		Vector3f dest = new Vector3f();
 		Vector3f up = right.cross(direction, dest);
 				

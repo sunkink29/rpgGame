@@ -18,7 +18,7 @@ public class Room extends GameObject {
 	}
 	
 	public Room(Vector2f position, Vector2f size){
-		super(new Transform(position, 1, new Vector2f(1), 0));
+		super(new Transform(position, -1, new Vector2f(1), 0));
 		this.size = new Vector2f(size);
 	}
 	
@@ -26,7 +26,7 @@ public class Room extends GameObject {
 		Vector2f position = transform.getPosition();
 		float layer = transform.getLayer();
 		wall = new GameObject(new Transform(position, layer, size, 0), defaultShapes.Square.getInstance());
-		layer += -0.1f;
+		layer += 0.1f;
 		floor = new GameObject(new Transform(position, layer, new Vector2f(size).sub(1,1), 0), defaultShapes.Square.getInstance());
 		floor.renderer.setColor(new Vector3f(0.8f));
 		addComponent(new Collider(true, CollisionObjs.WALL));

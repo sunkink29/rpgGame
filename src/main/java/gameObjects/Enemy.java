@@ -68,7 +68,7 @@ public class Enemy extends GameObject implements Damageable {
 	
 	@Override
 	public void init() {
-		sword = new Sword(new Transform(transform.getPosition(), -0.1f, new Vector2f(0.4f, 0.8f), 0), (CollisionObjs.PLAYER | CollisionObjs.DESTRUCTIBLEOBEJECT));
+		sword = new Sword(new Transform(transform.getPosition(), 0.1f, new Vector2f(0.4f, 0.8f), 0), (CollisionObjs.PLAYER | CollisionObjs.DESTRUCTIBLEOBEJECT));
 		addChildObject(sword);
 		sword.renderer.setColor( new Vector3f(0.88f, 0.46f, 0.46f));
 	}
