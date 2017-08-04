@@ -126,10 +126,20 @@ public class Main {
 //		map.addObject(new Enemy(new Vector3f(0, 12, 0), new Vector2f(0.5f),5, enemyPath, 1));
 //		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector2f(0.5f),5, enemyPath, 0));
 //		map.addObject(new Enemy(new Vector3f(0, 0, 0), new Vector2f(0.5f),5));
-//		map.addObject(new ProjectileLauncher(new Vector3f(0f, 0, -1), new Vector3f(1)));
+//		map.addObject(new ProjectileLauncher(new Vector2f(0f, 0), new Vector3f(1)));
 //		map.addObject(new ProjectileLauncher(new Vector3f(-12, 12, -1), new Vector3f(1), new Vector3f(1,0,0)));
 		
 		Player player = new Player(new Vector2f(), 0);
+		
+		Input.initalizeInput(window);
+		Input.addButtonBinding("forwardsMove", GLFW_KEY_W);
+		Input.addButtonBinding("backwardsMove", GLFW_KEY_S);
+		Input.addButtonBinding("leftMove", GLFW_KEY_A);
+		Input.addButtonBinding("rightMove", GLFW_KEY_D);
+		Input.addButtonBinding("leftRot", GLFW_KEY_J);
+		Input.addButtonBinding("rightRot", GLFW_KEY_L);
+		Input.addButtonBinding("attack", GLFW_KEY_K);
+		Input.addButtonBinding("printPlayerPos", GLFW_KEY_F);
 		
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
@@ -140,6 +150,7 @@ public class Main {
 			frames++;
 			double startTime = glfwGetTime();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		    glfwPollEvents();
 			
 			Controls.computeMatricesFromInputs(window);
 			Matrix4f mvp = Controls.getProjectionMatrix().mul(Controls.getViewMatrix());
@@ -150,7 +161,6 @@ public class Main {
 			player.renderPlayer(mvp);
 			map.renderMap(mvp);
 		    glfwSwapBuffers(window);
-		    glfwPollEvents();
 //		    while (glfwGetTime() - startTime < 1/30.0f){}
 		    if (glfwGetTime() - lastfCountTime >= 3) {
 		    	System.out.println(frames/(glfwGetTime() - lastfCountTime));

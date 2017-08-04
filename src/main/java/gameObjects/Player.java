@@ -11,6 +11,7 @@ import org.lwjgl.BufferUtils;
 import components.Collider;
 import components.Transform;
 import main.Controls;
+import main.Input;
 
 import java.lang.Math;
 
@@ -32,6 +33,7 @@ public class Player extends GameObject implements Damageable {
 	boolean isHit = false;
 	USP[] shaderProperties;
 	Vector2f swordTranslation;
+	float rotationSpeed = (float) (Math.PI*1.5);
 
 	public Player(Vector2f position, float rotation) {
 		super(new Transform(position, 0, new Vector2f(0.5f), rotation), defaultShapes.Triangle.getInstance());
@@ -62,42 +64,35 @@ public class Player extends GameObject implements Damageable {
 		Vector3f movementDirection = new Vector3f(0);
 		this.movementDirection = movementDirection;
 		
-		if (glfwGetKey(window, GLFW_KEY_W ) == GLFW_PRESS){
+		if (Input.getButtonDown("forwardsMove")){
 			movementDirection.add(up);
 		}
 		// Move backward
-		if (glfwGetKey(window, GLFW_KEY_S ) == GLFW_PRESS){
+		if (Input.getButtonDown("backwardsMove")){
 			movementDirection.sub(up);
 		}
 		// Strafe right
-		if (glfwGetKey(window, GLFW_KEY_D ) == GLFW_PRESS){
+		if (Input.getButtonDown("rightMove")){
 			movementDirection.add(right);
 		}
 		// Strafe left
-		if (glfwGetKey(window, GLFW_KEY_A ) == GLFW_PRESS){
+		if (Input.getButtonDown("leftMove")){
 			movementDirection.sub(right);
 		}
 		
-		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS){
+		float rotation = transform.getRotation();
+		if (Input.getButtonDown("leftRot")) {
+			rotation -= rotationSpeed * Controls.deltaTime;
+		}
+		if (Input.getButtonDown("rightRot")) {
+			rotation += rotationSpeed * Controls.deltaTime;
+		}
+		
+		if (Input.getButtonDown("attack")) {
 			if (!isAttacking) {
 				startAttackAnimation();
 			}
 		}
-		Vector2f playerPos = transform.getPosition();
-		DoubleBuffer xpos = BufferUtils.createDoubleBuffer(1), ypos = BufferUtils.createDoubleBuffer(1); // create buffers for cursor position
-		glfwGetCursorPos(window, xpos, ypos); // get cursor position
-		Vector2f cursorPos = new Vector2f((float)xpos.get(0), (float)ypos.get(0)); // put the cursor position into a vector object
-		IntBuffer width = BufferUtils.createIntBuffer(1), height = BufferUtils.createIntBuffer(1); // create buffers for window size
-		glfwGetWindowSize(window, width, height); // get the window size
-		Vector2f windowSize = new Vector2f(width.get(0),height.get(0)); // put the window size into a vector
-		cursorPos.sub(windowSize.mul(0.5f)); // get the cursor position
-		cursorPos.y = -cursorPos.y; // invert the y axis
-		cursorPos.x /= windowSize.x; // transform the cursor so that at the edge of the screen the cursor position is 1
-		cursorPos.y /= windowSize.y;
-		cursorPos.mul((Controls.zoom*((float)width.get(0)/height.get(0)))*0.5f, Controls.zoom*0.5f) // scale the cursor into world coordinates  
-		.add(-Controls.cameraPosition.x, Controls.cameraPosition.y) // transform the cursor position to be relative to the world orgin
-		.add(playerPos.x, -playerPos.y); // transform the cursor position to be relative to the player orgin
-		double rotation = Math.atan2(cursorPos.x, cursorPos.y); // get an angle from the x and y coordinates
 		
 		if (movementDirection.x != 0){
 			movementDirection.x /= movementDirection.x * movementDirection.x<0?-1:1;
@@ -106,10 +101,12 @@ public class Player extends GameObject implements Damageable {
 			movementDirection.y /= movementDirection.y * movementDirection.y<0?-1:1;
 		}
 		Vector3f movement = movementDirection.mul(Controls.deltaTime,dest).mul(speed);
-		transform.setPosition(playerPos.add(movement.x, movement.y));
-		transform.setRotation((float) rotation);
+		Vector2f playerPos = transform.getPosition();
 		
-		if (glfwGetKey(window, GLFW_KEY_F ) == GLFW_PRESS){
+		transform.setPosition(playerPos.add(movement.x, movement.y));
+		transform.setRotation(rotation);
+		
+		if (Input.getButtonDown("printPlayerPos")){
 			System.out.println(playerPos);
 		}
 		
