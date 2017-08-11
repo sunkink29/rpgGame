@@ -13,7 +13,10 @@ public class Shader {
 			"generalShader.frag"},
 		{"test",
 				"generalShader.vert",
-				"testShader.frag"}
+				"testShader.frag"},
+		{"gui",
+				"guiShader.vert",
+				"generalShader.frag"}
 			};
 	static ArrayList<ArrayList<String>> initializedShaders = new ArrayList<ArrayList<String>>();
 	

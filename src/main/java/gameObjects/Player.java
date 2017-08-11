@@ -28,18 +28,19 @@ public class Player extends GameObject implements Damageable {
 	int attackState = 1;
 	float speed = 5.0f; // 3 units / second
 	public Vector3f movementDirection = new Vector3f();
-	float health = 10;
+	int health = 10;
 	boolean damaged = false;
 	boolean isHit = false;
 	USP[] shaderProperties;
 	Vector2f swordTranslation;
 	float rotationSpeed = (float) (Math.PI*1.5);
 
-	public Player(Vector2f position, float rotation) {
+	public Player(Vector2f position, float rotation, int health) {
 		super(new Transform(position, 0, new Vector2f(0.5f), rotation), defaultShapes.Triangle.getInstance());
 		shaderProperties = new USP[] {new USP("shaderPosition", new Vector2f(0, 0))};
 		renderer.setShaderProperties(shaderProperties);
 		addComponent(new Collider(false, CollisionObjs.PLAYER));
+		this.health = health;
 		
 		sword = new Sword(new Transform(position, 0.1f, new Vector2f(0.4f, 0.8f), rotation), (CollisionObjs.ENEMY | CollisionObjs.DESTRUCTIBLEOBEJECT));
 		addChildObject(sword);
@@ -124,6 +125,10 @@ public class Player extends GameObject implements Damageable {
 			renderer.setColor(new Vector3f(1, 0, 0));
 			damaged = true;
 		}
+	}
+	
+	public int getHealth() {
+		return health;
 	}
 	
 	public void objectCollided(Collider otherObject) {

@@ -13,15 +13,18 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import gameObjects.Enemy;
+import gameObjects.GameObject;
 import gameObjects.Hallway;
 import gameObjects.Map;
 import gameObjects.Player;
 import gameObjects.Projectile;
 import gameObjects.ProjectileLauncher;
 import gameObjects.Room;
+import gameObjects.GuiObjectTest;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -50,7 +53,7 @@ public class Main {
 		glfwDefaultWindowHints(); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
-		glfwWindowHint(GLFW_SAMPLES, 8);
+		glfwWindowHint(GLFW_SAMPLES, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -126,7 +129,25 @@ public class Main {
 //		map.addObject(new ProjectileLauncher(new Vector2f(0f, 0), new Vector3f(1)));
 //		map.addObject(new ProjectileLauncher(new Vector3f(-12, 12, -1), new Vector3f(1), new Vector3f(1,0,0)));
 		
-		Player player = new Player(new Vector2f(), 0);
+		Player player = new Player(new Vector2f(), 0, 3);
+		GameObject uiContainer = new GameObject(new Transform(new Vector2f(0), 0, new Vector2f(1/10f), 0));
+		GameObject heartContainerObject = new GameObject(new Transform(new Vector2f(-9, 9), 0, new Vector2f(1), 0));
+		uiContainer.addChildObject(heartContainerObject);
+		for (int i = 0; i < player.getHealth(); i++) {
+			GameObject heart = new GuiObjectTest(new Transform(new Vector2f(i, 0), -1f, new Vector2f(0.5f,1), 0));
+			heartContainerObject.addChildObject(heart);
+		}
+		
+		Runnable checkHearts = () -> {
+			int playerHealth = player.getHealth();
+			ArrayList<GameObject> heartContainer = heartContainerObject.childObjects;
+			if (playerHealth >= 0 && playerHealth < heartContainer.size()) {
+				while (heartContainer.size() > 0 && playerHealth < heartContainer.size()) {
+					heartContainer.remove(heartContainer.size()-1);
+				}
+			}
+		};
+
 		
 		Input.initalizeInput(window);
 		Input.addButtonBinding("forwardsMove", GLFW_KEY_W);
@@ -152,9 +173,12 @@ public class Main {
 			Controls.computeMatricesFromInputs(window);
 			Matrix4f mvp = Controls.getProjectionMatrix().mul(Controls.getViewMatrix());
 			
+			uiContainer.renderObject(mvp);
+			
 			player.updatePlayer(window, map);
 			map.updateMap();
 			Collider.checkCollisions(map);
+			checkHearts.run();
 			player.renderPlayer(mvp);
 			map.renderMap(mvp);
 		    glfwSwapBuffers(window);
